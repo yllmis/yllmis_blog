@@ -17,6 +17,8 @@ export default async function CoverPage() {
       avatarSrc={avatarSrc}
       postCount={posts.length}
       diaryCount={diaries.length}
+      latestPost={posts[0] ?? null}
+      latestDiary={diaries[0] ?? null}
     />
   );
 }
