@@ -2,23 +2,24 @@ export const siteConfig = {
   title: "yllmis的博客",
   author: "yllmis",
   // 封面页头像下方的一句话标语（单句兜底）
-  tagline: "记录代码、思考与日常星光",
+  tagline: "种一棵树最好的时间是十年前，其次是现在",
   // 封面页动态打字机轮播标语（可自由增删）
   taglines: [
+    "种一棵树最好的时间是十年前，其次是现在",
+    "南昌大学 28 届在读 · Golang / AI Agent",
     "记录代码、思考与日常星光",
-    "在安静的角落，沉淀技术与生活碎片",
-    "保持好奇，认真走好每一段路",
   ],
-  // 个人主页简介（留给你之后自由填写）
-  bio: "在这里写一段关于你自己的简介……（可在 src/config/site.ts 中修改）",
-  description: "yllmis 的个人博客，记录技术文章、随笔与日常日记。",
-  // Bento 卡片：当前状态 & 座右铭（可自由修改）
-  status: "持续折腾与记录中",
-  motto: "保持好奇，认真记录每一段走过的路。",
-  // Bento 卡片：技术栈 / 兴趣标签（可自由增删）
-  skills: ["Go", "TypeScript", "Next.js", "后端架构", "随笔", "生活记录"],
+  // 个人主页简介
+  bio: "南昌大学 28 届在读，主力技术栈 Golang、AI Agent 与 TypeScript。在这里记录技术沉淀、项目折腾与生活日常。",
+  description:
+    "yllmis 的个人博客 — 南昌大学 28 届在读，关注 Golang 与 AI Agent，记录技术文章、随笔与日常日记。",
+  // Bento 卡片：当前状态 & 座右铭
+  status: "南昌大学 28 届在读 · 探索 Go & AI Agent",
+  motto: "种一棵树最好的时间是十年前，其次是现在。",
+  // Bento 卡片：技术栈 / 兴趣标签
+  skills: ["Golang", "AI Agent", "TypeScript", "Next.js", "Linux", "Git"],
   links: {
     github: "https://github.com/yllmis",
-    email: "",
+    email: "2943246638@qq.com",
   },
 } as const;
