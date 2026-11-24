@@ -31,7 +31,7 @@ export default async function DiaryTimelinePage() {
 
       {years.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-stone-300 p-12 text-center text-sm text-stone-500 dark:border-stone-700">
-          还没有写过日记，去右上角「写作」记录今天吧。
+          暂时还没有日记记录。
         </div>
       ) : (
         <div className="space-y-12">

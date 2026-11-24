@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, BookOpen, CalendarDays, PenLine } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarDays } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { Avatar } from "./Avatar";
 import { Greeting } from "./Greeting";
@@ -94,13 +94,6 @@ export function LandingCover({
         >
           <CalendarDays className="h-3.5 w-3.5" />
           日记 ({diaryCount})
-        </Link>
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-stone-300 backdrop-blur-md transition-colors hover:border-amber-300/40 hover:bg-amber-400/15 hover:text-amber-100"
-        >
-          <PenLine className="h-3.5 w-3.5" />
-          写作
         </Link>
       </nav>
     </div>

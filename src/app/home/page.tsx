@@ -164,7 +164,7 @@ export default async function PersonalHomePage() {
 
         {recentPosts.length === 0 ? (
           <p className="rounded-xl border border-dashed border-stone-300 p-8 text-center text-sm text-stone-500 dark:border-stone-700">
-            还没有发布文章，点击右上角「写作」开始第一篇吧。
+            暂时还没有发布文章。
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">

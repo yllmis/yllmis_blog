@@ -29,7 +29,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-打开 [http://localhost:3000](http://localhost:3000) 即可访问，点击右上角「写作」或访问 `/admin` 登录后台。
+打开 [http://localhost:3000](http://localhost:3000) 即可访问，直接访问 `/admin`（建议收藏书签）登录后台管理内容。
 
 ## 常用命令
 

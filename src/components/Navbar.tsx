@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, PenLine, Sparkles } from "lucide-react";
+import { Moon, Sun, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { siteConfig } from "@/config/site";
 
@@ -63,19 +63,6 @@ export function Navbar() {
               </Link>
             );
           })}
-
-          <Link
-            href="/admin"
-            title="管理与写作"
-            className={`ml-1 flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors ${
-              pathname.startsWith("/admin")
-                ? "bg-amber-600 text-white"
-                : "text-stone-600 hover:bg-stone-200/60 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-100"
-            }`}
-          >
-            <PenLine className="h-4 w-4" />
-            <span className="hidden sm:inline">写作</span>
-          </Link>
 
           <button
             type="button"
