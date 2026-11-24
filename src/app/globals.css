@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900 antialiased transition-colors duration-200 dark:bg-stone-950 dark:text-stone-100;
+  }
+}
+
+@keyframes avatar-breathe {
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.035);
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.65;
+  }
+  70% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.22);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-avatar-breathe {
+  animation: avatar-breathe 4.8s ease-in-out infinite;
+}
+
+.animate-ring-pulse {
+  animation: ring-pulse 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-avatar-breathe,
+  .animate-ring-pulse,
+  .animate-fade-up {
+    animation: none;
+  }
+}
+
+/* Highlight.js minimal clean theme */
+.hljs {
+  @apply block overflow-x-auto rounded-lg bg-stone-900 p-4 text-sm text-stone-100;
+}
+.hljs-comment,
+.hljs-quote {
+  @apply text-stone-400 italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  @apply text-violet-400;
+}
+.hljs-string,
+.hljs-doctag,
+.hljs-regexp {
+  @apply text-emerald-400;
+}
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  @apply text-sky-400;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable {
+  @apply text-amber-300;
+}
+.hljs-type,
+.hljs-built_in,
+.hljs-attr {
+  @apply text-cyan-300;
+}
