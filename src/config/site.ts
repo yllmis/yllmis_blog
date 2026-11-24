@@ -13,7 +13,9 @@ export const siteConfig = {
   bio: "南昌大学 28 届在读，主力技术栈 Golang、AI Agent 与 TypeScript。在这里记录技术沉淀、项目折腾与生活日常。",
   description:
     "yllmis 的个人博客 — 南昌大学 28 届在读，关注 Golang 与 AI Agent，记录技术文章、随笔与日常日记。",
-  // Bento 卡片：当前状态 & 座右铭
+  // Bento 卡片：坐标、当前状态 & 座右铭
+  location: "南昌",
+  school: "南昌大学 28 届",
   status: "南昌大学 28 届在读 · 探索 Go & AI Agent",
   motto: "种一棵树最好的时间是十年前，其次是现在。",
   // Bento 卡片：技术栈 / 兴趣标签

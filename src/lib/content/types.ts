@@ -8,6 +8,7 @@ export interface ContentMeta {
   summary: string;
   tags: string[];
   mood?: string;
+  readingMinutes?: number;
   sha?: string; // Used by GitHub Contents API for optimistic concurrency
 }
 

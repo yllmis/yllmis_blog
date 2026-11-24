@@ -37,6 +37,21 @@ function normalizeTags(value: unknown): string[] {
     .filter((item) => item.length > 0);
 }
 
+export function estimateReadingMinutes(body: string): number {
+  const plain = body
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/[#>*_\-\[\]()!]/g, " ");
+  const cjkCount = (plain.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const latinWords = plain
+    .replace(/[\u4e00-\u9fff]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+  const minutes = cjkCount / 300 + latinWords / 200;
+  return Math.max(1, Math.ceil(minutes));
+}
+
 export function parseMarkdown(
   type: ContentType,
   slug: string,
@@ -44,6 +59,7 @@ export function parseMarkdown(
   sha?: string,
 ): ContentItem {
   const { data, content } = matter(raw);
+  const cleanBody = content.replace(/^\r?\n/, "").replace(/\r?\n$/, "");
   return {
     slug,
     type,
@@ -52,8 +68,9 @@ export function parseMarkdown(
     summary: typeof data.summary === "string" ? data.summary.trim() : "",
     tags: normalizeTags(data.tags),
     mood: typeof data.mood === "string" && data.mood.trim() ? data.mood.trim() : undefined,
+    readingMinutes: estimateReadingMinutes(cleanBody),
     sha,
-    body: content.replace(/^\r?\n/, "").replace(/\r?\n$/, ""),
+    body: cleanBody,
   };
 }
 

@@ -3,7 +3,12 @@ import fs from "fs/promises";
 import os from "os";
 import path from "path";
 import { LocalFsStore } from "../local-store";
-import { validateSlug, parseMarkdown, serializeMarkdown } from "../markdown";
+import {
+  estimateReadingMinutes,
+  validateSlug,
+  parseMarkdown,
+  serializeMarkdown,
+} from "../markdown";
 
 describe("markdown helpers & slug validation", () => {
   it("accepts valid slugs and rejects traversal or invalid characters", () => {
@@ -33,6 +38,13 @@ describe("markdown helpers & slug validation", () => {
     expect(parsed.summary).toBe("一段摘要");
     expect(parsed.tags).toEqual(["Next.js", "随笔"]);
     expect(parsed.body.trim()).toBe("# 标题\n\n正文内容");
+    expect(parsed.readingMinutes).toBe(1);
+  });
+
+  it("estimates reading time for Chinese and English text", () => {
+    expect(estimateReadingMinutes("短文")).toBe(1);
+    expect(estimateReadingMinutes("测".repeat(650))).toBe(3);
+    expect(estimateReadingMinutes("hello ".repeat(420))).toBe(3);
   });
 });
 
