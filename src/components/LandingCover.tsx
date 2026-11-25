@@ -24,6 +24,9 @@ interface LandingCoverProps {
   avatarSrc: string | null;
   postCount: number;
   diaryCount: number;
+  totalReadingMinutes: number;
+  topTags: string[];
+  recentFeed: ContentMeta[];
   latestPost: ContentMeta | null;
   latestDiary: ContentMeta | null;
 }
@@ -138,6 +141,9 @@ export function LandingCover({
   avatarSrc,
   postCount,
   diaryCount,
+  totalReadingMinutes,
+  topTags,
+  recentFeed,
   latestPost,
   latestDiary,
 }: LandingCoverProps) {
@@ -194,6 +200,142 @@ export function LandingCover({
       )}
 
       <StarfieldBackground />
+
+      {/* 左侧 C：极简星盘大圆弧与竖向微声纹底座（纯几何线条托住左侧留白） */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-y-0 left-0 -z-10 hidden w-[38vw] overflow-hidden lg:block"
+      >
+        <div
+          className="absolute inset-0 opacity-75 transition-all duration-1000"
+          style={{
+            background: `radial-gradient(circle at 18% 48%, ${activeResonator.glow} 0%, transparent 60%)`,
+          }}
+        />
+        <svg
+          viewBox="0 0 360 800"
+          fill="none"
+          className="h-full w-full opacity-75"
+          preserveAspectRatio="xMinYMid slice"
+        >
+          {/* 外圈星盘细弧 */}
+          <circle
+            cx="-145"
+            cy="400"
+            r="360"
+            stroke="rgba(186, 230, 253, 0.1)"
+            strokeWidth="1"
+          />
+          {/* 内圈虚线星轨弧 */}
+          <circle
+            cx="-145"
+            cy="400"
+            r="292"
+            stroke="rgba(252, 211, 77, 0.13)"
+            strokeWidth="0.9"
+            strokeDasharray="3 8"
+          />
+          {/* 弧上四角微光星锚点 */}
+          <path
+            d="M215 400 L218 397 L221 400 L218 403 Z"
+            fill="rgba(252, 211, 77, 0.45)"
+          />
+          <path
+            d="M126 248 L128.5 245.5 L131 248 L128.5 250.5 Z"
+            fill="rgba(125, 211, 252, 0.45)"
+          />
+          {/* 左缘极细纵向声纹刻度 */}
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => {
+            const y = 336 + i * 16;
+            const len = i === 4 ? 18 : i % 2 === 0 ? 11 : 6;
+            return (
+              <line
+                key={i}
+                x1="16"
+                y1={y}
+                x2={16 + len}
+                y2={y}
+                stroke={
+                  i === 4
+                    ? "rgba(252, 211, 77, 0.38)"
+                    : "rgba(186, 230, 253, 0.18)"
+                }
+                strokeWidth="1"
+                strokeLinecap="round"
+              />
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* 左侧 A + B：一体化「精简博主微档案 + 近期星历」轻侧栏（仅宽屏悬浮，无厚重外框） */}
+      <aside
+        aria-label="博主微档案与近期星历"
+        style={{ animationDelay: "280ms" }}
+        className="animate-fade-up fixed left-7 top-[47%] z-10 hidden w-52 -translate-y-1/2 flex-col gap-5 text-left opacity-85 transition-opacity duration-300 hover:opacity-100 xl:flex 2xl:left-14"
+      >
+        {/* 简略 A：坐标、方向、沉淀与热门标签 */}
+        <div className="relative border-l border-white/15 pl-3.5">
+          <span className="absolute -left-[3px] top-1 h-1.5 w-1.5 rotate-45 bg-sky-300 shadow-[0_0_8px_rgba(125,211,252,0.9)]" />
+          <p className="font-mono text-[10px] tracking-[0.2em] text-sky-200/70">
+            {siteConfig.location} · {siteConfig.school}
+          </p>
+          <p className="mt-1 text-xs font-medium text-stone-200/95">
+            Golang · AI Agent · Web
+          </p>
+          <p className="mt-1 font-mono text-[11px] text-stone-400/85">
+            {postCount} 篇文章 · {diaryCount} 篇日记 · {totalReadingMinutes}m
+          </p>
+
+          {topTags.length > 0 && (
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              {topTags.map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/posts?tag=${encodeURIComponent(tag)}`}
+                  className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] text-stone-300/85 backdrop-blur-sm transition-colors hover:border-sky-300/45 hover:bg-sky-400/15 hover:text-white"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 简略 B：近期星历微时间轴 */}
+        {recentFeed.length > 0 && (
+          <div className="space-y-2 border-l border-white/10 pl-3.5">
+            <p className="font-mono text-[10px] tracking-[0.2em] text-amber-200/70">
+              RECENT // 近期星历
+            </p>
+            <div className="space-y-2">
+              {recentFeed.map((item) => (
+                <Link
+                  key={`${item.type}-${item.slug}`}
+                  href={`/${item.type}/${item.slug}`}
+                  className="group relative block transition-transform duration-200 hover:translate-x-0.5"
+                >
+                  <span
+                    className={`absolute -left-[17px] top-1.5 h-1.5 w-1.5 rounded-full transition-transform group-hover:scale-125 ${
+                      item.type === "posts"
+                        ? "bg-sky-300/85 shadow-[0_0_6px_rgba(125,211,252,0.8)]"
+                        : "bg-amber-300/85 shadow-[0_0_6px_rgba(252,211,77,0.8)]"
+                    }`}
+                  />
+                  <div className="flex items-center gap-1.5 font-mono text-[10px] text-stone-400/80">
+                    <span>{item.date.slice(5)}</span>
+                    <span className="text-stone-500">·</span>
+                    <span>{item.type === "posts" ? "文" : "记"}</span>
+                  </div>
+                  <p className="truncate text-xs text-stone-300/85 transition-colors group-hover:text-white">
+                    {item.title}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
 
       {/* 方式 B：单侧极淡边缘羽化溶图暗纹（若隐若现融入星空，不抢博客主体焦点） */}
       <div
