@@ -304,33 +304,41 @@ export function LandingCover({
 
         {/* 简略 B：近期星历微时间轴 */}
         {recentFeed.length > 0 && (
-          <div className="space-y-2 border-l border-white/10 pl-3.5">
+          <div className="relative space-y-2 pl-3.5">
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-1 left-0 top-1 w-[1px] -translate-x-1/2 bg-white/15"
+            />
             <p className="font-mono text-[10px] tracking-[0.2em] text-amber-200/70">
               RECENT // 近期星历
             </p>
             <div className="space-y-2">
               {recentFeed.map((item) => (
-                <Link
+                <div
                   key={`${item.type}-${item.slug}`}
-                  href={`/${item.type}/${item.slug}`}
-                  className="group relative block transition-transform duration-200 hover:translate-x-0.5"
+                  className="group relative"
                 >
                   <span
-                    className={`absolute -left-[17px] top-1.5 h-1.5 w-1.5 rounded-full transition-transform group-hover:scale-125 ${
+                    className={`pointer-events-none absolute -left-3.5 top-1.5 h-1.5 w-1.5 -translate-x-1/2 rounded-full transition-transform group-hover:scale-125 ${
                       item.type === "posts"
                         ? "bg-sky-300/85 shadow-[0_0_6px_rgba(125,211,252,0.8)]"
                         : "bg-amber-300/85 shadow-[0_0_6px_rgba(252,211,77,0.8)]"
                     }`}
                   />
-                  <div className="flex items-center gap-1.5 font-mono text-[10px] text-stone-400/80">
-                    <span>{item.date.slice(5)}</span>
-                    <span className="text-stone-500">·</span>
-                    <span>{item.type === "posts" ? "文" : "记"}</span>
-                  </div>
-                  <p className="truncate text-xs text-stone-300/85 transition-colors group-hover:text-white">
-                    {item.title}
-                  </p>
-                </Link>
+                  <Link
+                    href={`/${item.type}/${item.slug}`}
+                    className="block transition-transform duration-200 group-hover:translate-x-0.5"
+                  >
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] text-stone-400/80">
+                      <span>{item.date.slice(5)}</span>
+                      <span className="text-stone-500">·</span>
+                      <span>{item.type === "posts" ? "文" : "记"}</span>
+                    </div>
+                    <p className="truncate text-xs text-stone-300/85 transition-colors group-hover:text-white">
+                      {item.title}
+                    </p>
+                  </Link>
+                </div>
               ))}
             </div>
           </div>

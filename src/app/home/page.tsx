@@ -326,51 +326,55 @@ export default async function PersonalHomePage() {
             暂时还没有日记记录。
           </p>
         ) : (
-          <div className="relative ml-2.5 space-y-4 pl-7">
-            {/* 渐变时间轴竖线 */}
+          <div className="relative ml-3 space-y-4">
+            {/* 渐变时间轴竖线（中心锚定在 left-0） */}
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute bottom-3 left-0 top-3 w-[2px] rounded-full bg-gradient-to-b from-sky-400/80 via-indigo-400/45 to-amber-300/20"
+              className="pointer-events-none absolute bottom-3 left-0 top-3 w-[2px] -translate-x-1/2 rounded-full bg-gradient-to-b from-sky-400/80 via-indigo-400/45 to-amber-300/20"
             />
 
             {recentDiaries.map((diary, idx) => (
-              <Link
+              <div
                 key={diary.slug}
-                href={`/diary/${diary.slug}`}
                 style={{ animationDelay: `${idx * 70}ms` }}
-                className="animate-fade-up group relative block rounded-2xl border border-sky-200/60 bg-white/75 p-4 backdrop-blur-xl shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-400/75 hover:shadow-[0_10px_28px_rgba(56,189,248,0.14)] dark:border-sky-400/15 dark:bg-slate-900/60 dark:hover:border-sky-400/40"
+                className="animate-fade-up group relative pl-7"
               >
-                {/* 柔和发光星点 */}
-                <span className="absolute -left-[34px] top-5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-400/20 ring-4 ring-sky-400/10 transition-transform duration-300 group-hover:scale-125">
+                {/* 柔和发光星点（与竖线共享 left-0 -translate-x-1/2，精确落轴且不受卡片边框/悬停位移影响） */}
+                <span className="pointer-events-none absolute left-0 top-5 z-10 flex h-4 w-4 -translate-x-1/2 items-center justify-center rounded-full bg-sky-400/20 ring-4 ring-sky-400/10 transition-transform duration-300 group-hover:scale-125">
                   <span className="h-2 w-2 rounded-full bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.95)]" />
                 </span>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-400 dark:text-stone-500">
-                  <div className="flex items-center gap-2">
-                    <time className="font-mono font-medium text-stone-500 dark:text-stone-400">
-                      {diary.date}
-                    </time>
-                    {diary.mood && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">
-                        <Sparkles className="h-3 w-3" />
-                        {diary.mood}
-                      </span>
-                    )}
+                <Link
+                  href={`/diary/${diary.slug}`}
+                  className="block rounded-2xl border border-sky-200/60 bg-white/75 p-4 backdrop-blur-xl shadow-sm transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-sky-400/75 group-hover:shadow-[0_10px_28px_rgba(56,189,248,0.14)] dark:border-sky-400/15 dark:bg-slate-900/60 dark:group-hover:border-sky-400/40"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-stone-400 dark:text-stone-500">
+                    <div className="flex items-center gap-2">
+                      <time className="font-mono font-medium text-stone-500 dark:text-stone-400">
+                        {diary.date}
+                      </time>
+                      {diary.mood && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-950/60 dark:text-amber-300">
+                          <Sparkles className="h-3 w-3" />
+                          {diary.mood}
+                        </span>
+                      )}
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-stone-400 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-300">
+                      阅读 <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                    </span>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] text-stone-400 transition-colors group-hover:text-sky-600 dark:group-hover:text-sky-300">
-                    阅读 <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                  </span>
-                </div>
 
-                <h3 className="mt-1.5 font-semibold text-stone-900 transition-colors group-hover:text-sky-700 dark:text-stone-100 dark:group-hover:text-sky-300">
-                  {diary.title}
-                </h3>
-                {diary.summary && (
-                  <p className="mt-1 line-clamp-1 text-sm text-stone-600 dark:text-stone-400">
-                    {diary.summary}
-                  </p>
-                )}
-              </Link>
+                  <h3 className="mt-1.5 font-semibold text-stone-900 transition-colors group-hover:text-sky-700 dark:text-stone-100 dark:group-hover:text-sky-300">
+                    {diary.title}
+                  </h3>
+                  {diary.summary && (
+                    <p className="mt-1 line-clamp-1 text-sm text-stone-600 dark:text-stone-400">
+                      {diary.summary}
+                    </p>
+                  )}
+                </Link>
+              </div>
             ))}
           </div>
         )}
