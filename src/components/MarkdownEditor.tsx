@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ExternalLink, Save } from "lucide-react";
+import { ArrowLeft, ChevronDown, ExternalLink, Save } from "lucide-react";
 import type { ContentType } from "@/lib/content/types";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
@@ -162,15 +162,21 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
           <label className="mb-1 block text-xs font-medium text-stone-500">
             内容栏目
           </label>
-          <select
-            value={type}
-            disabled={!isNew}
-            onChange={(e) => setType(e.target.value as ContentType)}
-            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 disabled:opacity-60 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
-          >
-            <option value="posts">文章与随笔（content/posts）</option>
-            <option value="diary">日记时间轴（content/diary）</option>
-          </select>
+          <div className="relative">
+            <select
+              value={type}
+              disabled={!isNew}
+              onChange={(e) => setType(e.target.value as ContentType)}
+              className="w-full appearance-none rounded-lg border border-stone-300 bg-stone-50 py-2 pl-3 pr-9 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-60 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+            >
+              <option value="posts">文章与随笔（content/posts）</option>
+              <option value="diary">日记时间轴（content/diary）</option>
+            </select>
+            <ChevronDown
+              aria-hidden="true"
+              className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-400 dark:text-stone-500"
+            />
+          </div>
         </div>
 
         <div>
@@ -183,7 +189,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
             disabled={!isNew}
             onChange={(e) => setSlug(e.target.value)}
             placeholder="例如：my-first-post 或 2026-11-23-note"
-            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-900 disabled:opacity-60 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 font-mono text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 disabled:opacity-60 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
           />
         </div>
 
@@ -196,7 +202,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="输入标题"
-            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
           />
         </div>
 
@@ -208,7 +214,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
           />
         </div>
 
@@ -222,7 +228,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Next.js, 随笔, Go"
-              className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+              className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
             />
           </div>
         ) : (
@@ -235,7 +241,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
               value={mood}
               onChange={(e) => setMood(e.target.value)}
               placeholder="例如：平静、开心、充实"
-              className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+              className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
             />
           </div>
         )}
@@ -249,7 +255,7 @@ export function MarkdownEditor({ initial }: { initial: EditorInitialData }) {
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             placeholder="简短概括这篇内容"
-            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
+            className="w-full rounded-lg border border-stone-300 bg-stone-50 px-3 py-2 text-sm text-stone-900 transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-stone-700 dark:bg-stone-950 dark:text-stone-100"
           />
         </div>
       </div>
