@@ -18,6 +18,7 @@ import type { ContentMeta } from "@/lib/content/types";
 import { Avatar } from "./Avatar";
 import { Greeting } from "./Greeting";
 import { StarfieldBackground } from "./StarfieldBackground";
+import { WuwaIntroOverlay } from "./WuwaIntroOverlay";
 
 interface LandingCoverProps {
   avatarSrc: string | null;
@@ -118,6 +119,8 @@ export function LandingCover({
   latestDiary,
 }: LandingCoverProps) {
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [initialGateOpen, setInitialGateOpen] = useState(true);
+  const [replayCount, setReplayCount] = useState(0);
 
   const handleCopyEmail = async () => {
     if (!siteConfig.links.email) return;
@@ -132,6 +135,27 @@ export function LandingCover({
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-between gap-8 overflow-hidden px-4 py-6 text-stone-100 sm:px-8 sm:py-8">
+      {/* 首帧同步检测会话标记，已看过入场共鸣则直接放行，零黑屏闪烁 */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `try{if(sessionStorage.getItem("yllmis_wuwa_intro_seen")==="1"){document.documentElement.dataset.wuwaSeen="1"}}catch(e){}`,
+        }}
+      />
+
+      {initialGateOpen && (
+        <WuwaIntroOverlay
+          isInitialGate
+          onComplete={() => setInitialGateOpen(false)}
+        />
+      )}
+
+      {replayCount > 0 && (
+        <WuwaIntroOverlay
+          key={`replay-${replayCount}`}
+          onComplete={() => setReplayCount(0)}
+        />
+      )}
+
       <StarfieldBackground />
 
       {/* 顶部轻透氛围 HUD 栏 */}
@@ -148,7 +172,25 @@ export function LandingCover({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] text-stone-400 backdrop-blur-md md:inline-flex">
+          <button
+            type="button"
+            onClick={() => setReplayCount((c) => c + 1)}
+            aria-label="重播共鸣入场动画"
+            title="重播鸣潮共鸣动画"
+            className="group inline-flex h-8 items-center gap-1.5 rounded-full border border-sky-300/20 bg-sky-400/[0.08] px-3 text-[11px] font-medium text-sky-100 backdrop-blur-md transition-all hover:border-amber-300/50 hover:bg-sky-400/[0.16] hover:text-white"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              className="h-3.5 w-3.5 text-amber-300 transition-transform duration-500 group-hover:rotate-90"
+              fill="currentColor"
+            >
+              <path d="M8 0.5 L9.6 6.4 L15.5 8 L9.6 9.6 L8 15.5 L6.4 9.6 L0.5 8 L6.4 6.4 Z" />
+            </svg>
+            <span className="hidden sm:inline">重播共鸣</span>
+          </button>
+
+          <span className="hidden items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[11px] text-stone-400 backdrop-blur-md lg:inline-flex">
             <Sparkles className="h-3 w-3 text-amber-300/80" />
             轻点星空放流星
           </span>
