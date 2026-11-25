@@ -32,6 +32,58 @@ interface Ripple {
   alpha: number;
 }
 
+interface AmbientButterfly {
+  x: number;
+  y: number;
+  angle: number;
+  turnPhase: number;
+  speed: number;
+  flapPhase: number;
+  flapSpeed: number;
+  scale: number;
+  alpha: number;
+  hue: number;
+}
+
+function drawSoftButterfly(
+  ctx: CanvasRenderingContext2D,
+  b: AmbientButterfly,
+) {
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.rotate(b.angle + Math.PI / 2);
+
+  const spread = 0.25 + 0.75 * Math.abs(Math.cos(b.flapPhase));
+  ctx.scale(b.scale * spread, b.scale);
+  ctx.shadowColor = `hsla(${b.hue}, 92%, 72%, ${b.alpha * 0.85})`;
+  ctx.shadowBlur = 12;
+
+  for (const side of [-1, 1] as const) {
+    ctx.save();
+    ctx.scale(side, 1);
+
+    ctx.beginPath();
+    ctx.moveTo(0, -1.5);
+    ctx.bezierCurveTo(5, -12, 18, -14, 15, -3);
+    ctx.bezierCurveTo(13, 2.5, 5, 2.5, 0, 1);
+    ctx.closePath();
+    ctx.fillStyle = `hsla(${b.hue}, 95%, 82%, ${b.alpha})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 1);
+    ctx.bezierCurveTo(6, 2, 12, 7, 9, 12);
+    ctx.bezierCurveTo(6, 15, 2, 11, 0, 5);
+    ctx.closePath();
+    ctx.fillStyle = `hsla(${b.hue + 14}, 90%, 74%, ${b.alpha * 0.75})`;
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  ctx.restore();
+}
+
 export function StarfieldBackground() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -54,6 +106,7 @@ export function StarfieldBackground() {
       active: false,
     };
     let stars: Star[] = [];
+    let butterflies: AmbientButterfly[] = [];
     const shootingStars: ShootingStar[] = [];
     const ripples: Ripple[] = [];
     let nextShootAt = performance.now() + 2400;
@@ -80,7 +133,7 @@ export function StarfieldBackground() {
       });
     };
 
-    const initStars = () => {
+    const initScene = () => {
       const count = Math.min(165, Math.max(75, Math.floor((width * height) / 9500)));
       stars = Array.from({ length: count }, () => {
         const depth = 0.3 + Math.random() * 0.95;
@@ -97,6 +150,46 @@ export function StarfieldBackground() {
           hue: Math.random() > 0.78 ? 42 : Math.random() > 0.45 ? 205 : 252,
         };
       });
+
+      // 3 只克制轻盈的常驻微光星蝶，缓慢游弋于星海之间
+      butterflies = [
+        {
+          x: width * 0.24,
+          y: height * 0.38,
+          angle: -0.35,
+          turnPhase: 0.4,
+          speed: 0.38,
+          flapPhase: 0,
+          flapSpeed: 0.075,
+          scale: 0.62,
+          alpha: 0.34,
+          hue: 196,
+        },
+        {
+          x: width * 0.74,
+          y: height * 0.32,
+          angle: 2.6,
+          turnPhase: 2.1,
+          speed: 0.34,
+          flapPhase: 1.8,
+          flapSpeed: 0.068,
+          scale: 0.54,
+          alpha: 0.28,
+          hue: 206,
+        },
+        {
+          x: width * 0.66,
+          y: height * 0.66,
+          angle: -2.1,
+          turnPhase: 4.0,
+          speed: 0.32,
+          flapPhase: 3.2,
+          flapSpeed: 0.072,
+          scale: 0.5,
+          alpha: 0.25,
+          hue: 192,
+        },
+      ];
     };
 
     const resize = () => {
@@ -108,7 +201,7 @@ export function StarfieldBackground() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      initStars();
+      initScene();
     };
 
     const onMouseMove = (e: MouseEvent) => {
@@ -196,6 +289,25 @@ export function StarfieldBackground() {
         if (s.depth > 0.74) {
           rendered.push({ x: px, y: py });
         }
+      }
+
+      // 常驻轻盈星蝶缓慢游弋
+      for (const b of butterflies) {
+        if (!reducedMotion) {
+          b.turnPhase += 0.011;
+          b.angle += Math.sin(b.turnPhase) * 0.009;
+          b.flapPhase += b.flapSpeed;
+          b.x += Math.cos(b.angle) * b.speed;
+          b.y += Math.sin(b.angle) * b.speed;
+
+          // 柔和边界折返
+          const margin = 70;
+          if (b.x < -margin) b.x = width + margin;
+          if (b.x > width + margin) b.x = -margin;
+          if (b.y < -margin) b.y = height + margin;
+          if (b.y > height + margin) b.y = -margin;
+        }
+        drawSoftButterfly(ctx, b);
       }
 
       // 鼠标附近的微光星图连线

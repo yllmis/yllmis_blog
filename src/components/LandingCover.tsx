@@ -111,6 +111,29 @@ function LiveClock() {
   );
 }
 
+/** 极细暖金声波分割线（克制的《鸣潮》频率意象） */
+function SoundwaveDivider() {
+  return (
+    <div
+      aria-hidden="true"
+      className="mt-4 flex items-center justify-center gap-2 opacity-60"
+    >
+      <span className="h-[1px] w-14 bg-gradient-to-r from-transparent via-amber-200/50 to-amber-300/80 sm:w-20" />
+      <svg
+        viewBox="0 0 64 14"
+        className="h-3 w-14 text-amber-200/85"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      >
+        <path d="M2 7 H12 L16 4 L20 10 L25 2.5 L29 11.5 L32 1.5 L35 11.5 L39 2.5 L44 10 L48 4 L52 7 H62" />
+      </svg>
+      <span className="h-[1px] w-14 bg-gradient-to-l from-transparent via-amber-200/50 to-amber-300/80 sm:w-20" />
+    </div>
+  );
+}
+
 export function LandingCover({
   avatarSrc,
   postCount,
@@ -121,6 +144,20 @@ export function LandingCover({
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [initialGateOpen, setInitialGateOpen] = useState(true);
   const [replayCount, setReplayCount] = useState(0);
+  const [resonatorIdx, setResonatorIdx] = useState(0);
+  const [pausedCycle, setPausedCycle] = useState(false);
+
+  const resonators = siteConfig.resonators;
+  const activeResonator = resonators[resonatorIdx % resonators.length];
+
+  // 柔和自动轮换单侧溶图暗纹与伴读台词（悬停切换器时暂停）
+  useEffect(() => {
+    if (pausedCycle || resonators.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setResonatorIdx((prev) => (prev + 1) % resonators.length);
+    }, 9500);
+    return () => window.clearInterval(timer);
+  }, [pausedCycle, resonators.length]);
 
   const handleCopyEmail = async () => {
     if (!siteConfig.links.email) return;
@@ -134,7 +171,7 @@ export function LandingCover({
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-between gap-8 overflow-hidden px-4 py-6 text-stone-100 sm:px-8 sm:py-8">
+    <div className="relative flex min-h-screen flex-col items-center justify-between gap-6 overflow-hidden px-4 py-6 text-stone-100 sm:px-8 sm:py-8">
       {/* 首帧同步检测会话标记，已看过入场共鸣则直接放行，零黑屏闪烁 */}
       <script
         dangerouslySetInnerHTML={{
@@ -157,6 +194,42 @@ export function LandingCover({
       )}
 
       <StarfieldBackground />
+
+      {/* 方式 B：单侧极淡边缘羽化溶图暗纹（若隐若现融入星空，不抢博客主体焦点） */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-y-0 right-0 -z-10 w-full overflow-hidden md:w-[56vw] lg:w-[50vw]"
+      >
+        {/* 随角色微调的极淡氛围背光 */}
+        <div
+          className="absolute inset-0 transition-all duration-1000"
+          style={{
+            background: `radial-gradient(circle at 68% 44%, ${activeResonator.glow} 0%, transparent 64%)`,
+          }}
+        />
+        {resonators.map((item, idx) => {
+          const active = idx === resonatorIdx % resonators.length;
+          return (
+            <img
+              key={item.id}
+              src={item.src}
+              alt=""
+              style={{
+                objectPosition: item.objectPosition,
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 68% 58% at 64% 45%, rgba(0,0,0,1) 14%, rgba(0,0,0,0.58) 48%, rgba(0,0,0,0) 78%)",
+                maskImage:
+                  "radial-gradient(ellipse 68% 58% at 64% 45%, rgba(0,0,0,1) 14%, rgba(0,0,0,0.58) 48%, rgba(0,0,0,0) 78%)",
+              }}
+              className={`absolute inset-0 h-full w-full object-cover saturate-[0.78] transition-all duration-1000 ease-out ${
+                active
+                  ? "scale-100 opacity-[0.15] sm:opacity-[0.22]"
+                  : "scale-[1.03] opacity-0"
+              }`}
+            />
+          );
+        })}
+      </div>
 
       {/* 顶部轻透氛围 HUD 栏 */}
       <header className="animate-fade-up flex w-full max-w-5xl items-center justify-between gap-3">
@@ -226,14 +299,14 @@ export function LandingCover({
         </div>
       </header>
 
-      {/* 中央核心：旋转星轨 + 呼吸悬浮头像 + 打字机标语 */}
+      {/* 中央核心：旋转星轨 + 呼吸悬浮头像 + 打字机标语 + 克制声波台词签 */}
       <section className="flex flex-col items-center text-center">
         <Link
           href="/home"
           aria-label="点击头像进入个人主页"
           className="group relative flex flex-col items-center focus:outline-none"
         >
-          <div className="relative flex h-52 w-52 items-center justify-center sm:h-60 sm:w-60">
+          <div className="relative flex h-48 w-48 items-center justify-center sm:h-56 sm:w-56">
             {/* 外层逆向旋转星轨 + 微光星点 */}
             <div className="animate-orbit-reverse pointer-events-none absolute inset-0 rounded-full border border-dashed border-sky-300/20">
               <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-sky-300 shadow-[0_0_10px_rgba(125,211,252,0.95)]" />
@@ -264,23 +337,69 @@ export function LandingCover({
 
         {/* 昵称与动态打字机标语 */}
         <h1
-          className="animate-fade-up mt-5 bg-gradient-to-r from-white via-sky-100 to-amber-100 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl"
+          className="animate-fade-up mt-4 bg-gradient-to-r from-white via-sky-100 to-amber-100 bg-clip-text text-4xl font-bold tracking-tight text-transparent sm:text-5xl"
           style={{ animationDelay: "120ms" }}
         >
           {siteConfig.author}
         </h1>
         <p
-          className="animate-fade-up mt-2.5 max-w-lg text-sm leading-relaxed text-stone-300/90 sm:text-base"
-          style={{ animationDelay: "220ms" }}
+          className="animate-fade-up mt-2 max-w-lg text-sm leading-relaxed text-stone-200/90 sm:text-base"
+          style={{ animationDelay: "200ms" }}
         >
           <TypewriterTagline phrases={siteConfig.taglines} />
         </p>
+
+        {/* 极细声波分割线 + 克制伴读台词与角色暗纹切换 */}
+        <div
+          className="animate-fade-up flex max-w-xl flex-col items-center"
+          style={{ animationDelay: "260ms" }}
+          onMouseEnter={() => setPausedCycle(true)}
+          onMouseLeave={() => setPausedCycle(false)}
+        >
+          <SoundwaveDivider />
+
+          <p
+            key={activeResonator.id}
+            className="animate-fade-up mt-2.5 px-2 text-xs italic leading-relaxed text-stone-300/80 sm:text-[13px]"
+          >
+            「{activeResonator.quote}」
+          </p>
+
+          <div
+            role="tablist"
+            aria-label="切换背景共鸣暗纹与台词"
+            className="mt-2 inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 backdrop-blur-sm"
+          >
+            {resonators.map((item, idx) => {
+              const active = idx === resonatorIdx % resonators.length;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setResonatorIdx(idx)}
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] transition-all ${
+                    active
+                      ? "bg-white/10 font-medium text-amber-200/95"
+                      : "text-stone-400/75 hover:text-stone-200"
+                  }`}
+                >
+                  {active && (
+                    <span className="h-1 w-1 rounded-full bg-amber-300 shadow-[0_0_6px_rgba(252,211,77,0.9)]" />
+                  )}
+                  <span>{item.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
       {/* 底部：最新文章 & 最近日记毛玻璃浮卡 + 快捷导航 */}
       <div
-        className="animate-fade-up flex w-full max-w-3xl flex-col items-center gap-5"
-        style={{ animationDelay: "300ms" }}
+        className="animate-fade-up flex w-full max-w-3xl flex-col items-center gap-4"
+        style={{ animationDelay: "320ms" }}
       >
         {(latestPost || latestDiary) && (
           <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
