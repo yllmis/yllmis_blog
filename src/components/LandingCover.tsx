@@ -217,13 +217,13 @@ export function LandingCover({
               style={{
                 objectPosition: item.objectPosition,
                 WebkitMaskImage:
-                  "radial-gradient(ellipse 68% 58% at 64% 45%, rgba(0,0,0,1) 14%, rgba(0,0,0,0.58) 48%, rgba(0,0,0,0) 78%)",
+                  "radial-gradient(ellipse 70% 60% at 64% 45%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.68) 52%, rgba(0,0,0,0) 80%)",
                 maskImage:
-                  "radial-gradient(ellipse 68% 58% at 64% 45%, rgba(0,0,0,1) 14%, rgba(0,0,0,0.58) 48%, rgba(0,0,0,0) 78%)",
+                  "radial-gradient(ellipse 70% 60% at 64% 45%, rgba(0,0,0,1) 22%, rgba(0,0,0,0.68) 52%, rgba(0,0,0,0) 80%)",
               }}
-              className={`absolute inset-0 h-full w-full object-cover saturate-[0.78] transition-all duration-1000 ease-out ${
+              className={`absolute inset-0 h-full w-full object-cover saturate-[0.88] transition-all duration-1000 ease-out ${
                 active
-                  ? "scale-100 opacity-[0.15] sm:opacity-[0.22]"
+                  ? "scale-100 opacity-[0.24] sm:opacity-[0.34]"
                   : "scale-[1.03] opacity-0"
               }`}
             />
