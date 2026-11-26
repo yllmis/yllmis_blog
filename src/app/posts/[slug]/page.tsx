@@ -124,17 +124,11 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
           )}
         </header>
 
-        {/* 正文阅读区 + 可选悬浮目录 */}
-        <div
-          className={
-            hasToc
-              ? "flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_200px] lg:items-start lg:gap-8"
-              : ""
-          }
-        >
+        {/* 正文居中阅读区 + 宽屏右侧悬浮跟随滚动目录 */}
+        <div className="relative">
           {hasToc && (
-            <div className="lg:hidden">
-              <TableOfContents items={toc} accent="sky" />
+            <div className="mb-6 xl:hidden">
+              <TableOfContents items={toc} accent="sky" variant="mobile" />
             </div>
           )}
 
@@ -143,8 +137,8 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
           </div>
 
           {hasToc && (
-            <aside className="hidden lg:block">
-              <TableOfContents items={toc} accent="sky" />
+            <aside className="absolute bottom-0 left-full top-0 ml-5 hidden w-44 xl:block 2xl:ml-8 2xl:w-52">
+              <TableOfContents items={toc} accent="sky" variant="desktop" />
             </aside>
           )}
         </div>
