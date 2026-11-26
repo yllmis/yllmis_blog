@@ -1,0 +1,477 @@
+---
+title: 如何利用ai学习
+date: '2026-11-21'
+summary: >-
+  ai coding 实践需知Claude
+  Code实践经验个人使用经验&amp;外网的经验分享总结。参考文档：https://code.claude.com/docs/en/best-practices
+yuqueUrl: 'https://www.yuque.com/yllmis/uw8ppk/ho6mzk4d4qx3cn6w'
+---
+<details class="lake-collapse"><summary id="u8f2d7ad4">ai coding 实践需知</summary><h1 id="f533c31e" style="text-align: left; line-height: 1.5"><strong>Claude Code实践经验</strong></h1><p id="uebf0ac3f" class="ne-p" style="text-align: left; line-height: 1.5">个人使用经验&amp;外网的经验分享总结。参考文档：</p><p id="ue0c79e79" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://code.claude.com/docs/en/best-practices" data-href="https://code.claude.com/docs/en/best-practices" target="_blank" class="ne-link">https://code.claude.com/docs/en/best-practices</a></p><p id="u21428484" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://github.com/shanraisshan/claude-code-best-practice" data-href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" class="ne-link">GitHub - shanraisshan/claude-code-best-practice: practice made claude perfect · GitHub</a></p><p id="u276c35ff" class="ne-p">
+</p><h2 id="2.-using-superpowers" style="text-align: left; line-height: 1.5"><strong>2.</strong><strong> </strong><strong>using-superpowers</strong></h2><p id="u3dbd3a59" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://github.com/obra/superpowers" data-href="https://github.com/obra/superpowers" target="_blank" class="ne-link">https://github.com/obra/superpowers</a></p><p id="u85f5d689" class="ne-p" style="text-align: left; line-height: 1.5">在做一切动作前，在你的输入框上打下 /using-superpowers 主动唤醒该skills</p><p id="u2c3f2129" class="ne-p" style="text-align: left; line-height: 1.5">部分模型对skills的使用不够积极主动，比如minimax</p><h2 id="3e3ec6fe" style="text-align: left; line-height: 1.5"><strong>3.</strong><strong> </strong><strong>做好Context管理</strong></h2><p id="uad56e8ee" class="ne-p" style="text-align: left; line-height: 1.5">上下文对于模型的性能非常非常重要，哪怕是<strong>opus4.6在70-80%context的情况下，表现也会非常差。</strong><strong>有的时候不是模型不行，是你的上下文太冗余了</strong>以下操作帮助你优化上下文：</p><p id="ub925eb92" class="ne-p" style="text-align: left; line-height: 1.5">1、 /context 查看当前的context占比1</p><p id="uecc6f0b9" class="ne-p" style="text-align: left; line-height: 1.5">2、 禁用未使用的mcp，考虑采用CLI替换mcp</p><p id="udb62ee2d" class="ne-p" style="text-align: left; line-height: 1.15">3、  </p><pre data-language="plain" id="R7oIQ" class="ne-codeblock language-plain"><code>curl -LsSf https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu -o ~/bin/uv</code></pre><p id="uf0ea1f9b" class="ne-p" style="text-align: left; line-height: 1.5">4、  </p><p id="u0df43722" class="ne-p" style="text-align: left; line-height: 1.5">5、 不用使用/init来生成超长的<a href="https://CLAUDE.md" data-href="https://CLAUDE.md" target="_blank" class="ne-link">CLAUDE.md</a></p><p id="ud38ef7bc" class="ne-p" style="text-align: left; line-height: 1.5">6、 时刻关注context用量，在超过50%时，考虑使用/compact来压缩上下文</p><p id="u8804f0d7" class="ne-p" style="text-align: left; line-height: 1.5">建议/compact + 定向的描述，让模型针对性的保留重要的上下文</p><p id="ud8ab2029" class="ne-p" style="text-align: left; line-height: 1.5">7、 使用<a href="https://www.rtk-ai.app/" data-href="https://www.rtk-ai.app/" target="_blank" class="ne-link">rtk</a>优化git，ls等命令的无效输出</p><p id="u3495ce7e" class="ne-p" style="text-align: left; line-height: 1.5">![](/images/yuque/8f17fb99903ca910.png)</p><p id="ubcffdc29" class="ne-p" style="text-align: center; line-height: 1.5">左：普通的git log 右：rtk优化后的git log 节省了大量的token</p><p id="u09dc24c0" class="ne-p" style="text-align: left; line-height: 1.5">8、 在指令中多使用<strong>sub agent</strong>执行任务</p><p id="uae7d91a8" class="ne-p" style="text-align: left; line-height: 1.5">9、 切换任务时务必使用 <strong>/clear</strong> 清除上下文</p><h2 id="e45f7ad0" style="text-align: left; line-height: 1.5"><strong>4.</strong><strong> </strong><strong>总结经验教训</strong></h2><p id="u83eef770" class="ne-p" style="text-align: left; line-height: 1.5">在开发过程中，claude code总会犯错的。在犯错后，直接告诉他：</p><pre data-language="plain" id="fX8EN" class="ne-codeblock language-plain"><code>“你犯了什么XXX错,下次不能再犯”
+“记住这一次的教训，不要再犯这个错了”</code></pre><p id="u6ef2cdb2" class="ne-p" style="text-align: left; line-height: 1.5"><strong>Claude Code会将记忆写入memory.md，但是这也会占用context，所以务必控制长度！</strong></p><h2 id="bb77f8bc" style="text-align: left; line-height: 1.5"><strong>5.</strong><strong> </strong><strong>给 Claude 可验证的成功标准</strong></h2><p id="u602d37bd" class="ne-p" style="text-align: left; line-height: 1.5"><strong>让 Claude 能自己检查自己</strong>。</p><p id="ud77d3791" class="ne-p" style="text-align: left; line-height: 1.5">比如提供测试用例、截图对比、明确的期望输出，甚至是脚本或命令（如 ‎`npm test`、lint 命令）。</p><p id="u0151c7b0" class="ne-p" style="text-align: left; line-height: 1.5">如果没有这些验证标准，Claude 很容易给出“看起来对但其实有 bug”的代码，最后只能靠你肉眼审查。</p><p id="uf544211d" class="ne-p" style="text-align: left; line-height: 1.5"><strong>“不要 babysit（不要当保姆）”，少管细节，多让 Claude 自证正确；让 Claude 挑战你、证明修改是对的。</strong></p><h2 id="19a6442a" style="text-align: left; line-height: 1.5"><strong>6.</strong><strong> </strong><strong>使用git worktree并行开发</strong></h2><p id="ud564eb73" class="ne-p" style="text-align: left; line-height: 1.5">在一个 Git 仓库里，你可以用 <strong>git worktree</strong> 开出同一个项目的“多个工作目录”，每个目录对应一个不同的分支。这样：</p><p id="u66f4fd18" class="ne-p" style="text-align: left; line-height: 1.5">● 你可以给每个 agent（或者每个 Claude 会话）分配一个独立的 worktree，相当于每人一套单独的代码副本。</p><p id="uaddc1b43" class="ne-p" style="text-align: left; line-height: 1.5">● 这些 worktree 互相不会干扰：一个 agent 在自己的 worktree 里乱改、乱试验，不会把别人的工作目录搞乱。</p><p id="uab35b998" class="ne-p" style="text-align: left; line-height: 1.5">● 但它们毕竟还是同一个 Git 仓库，分支之间该合并、该 rebase 还是可以正常，最终再把各自的成果合回主干。</p><p id="ucc0e85be" class="ne-p" style="text-align: left; line-height: 1.5"><strong>不用多开一堆重复仓库，就能给每个 agent 一块独立“沙盒”，各写各的分支，最后再合流。</strong></p><h2 id="95bfb312" style="text-align: left; line-height: 1.5"><strong>7.</strong><strong> </strong><strong>经常做的</strong><strong>指令转换为</strong><strong> command </strong></h2><p id="u79f34f07" class="ne-p" style="text-align: left; line-height: 1.5">你一天做不止一次的事情（比如整理 commit、对某类代码做 review、生成 changelog、检查 config），都应该变成 ‎/xxx 命令，写在 ‎.claude/commands/，进 git。</p><p id="u7e4700d1" class="ne-p" style="text-align: left; line-height: 1.5">好处是：</p><p id="u83bb9738" class="ne-p" style="text-align: left; line-height: 1.5">● 少打废话 prompt</p><p id="uc819b401" class="ne-p" style="text-align: left; line-height: 1.5">● Claude 自己也能在工作流里调用这些命令</p><h2 id="00f57388" style="text-align: left; line-height: 1.5"><strong>8.</strong><strong> </strong><strong>把高频“套路”做成 skill，带脚本和示例 </strong></h2><p id="udc224375" class="ne-p" style="text-align: left; line-height: 1.5">Skill 比 command 更重一些：它可以带 ‎scripts/、‎references/、‎examples/。</p><p id="u6ad4f095" class="ne-p" style="text-align: left; line-height: 1.5">推荐使用<a href="https://github.com/anthropics/skills/tree/main/skills/skill-creator" data-href="https://github.com/anthropics/skills/tree/main/skills/skill-creator" target="_blank" class="ne-link">skill-creator</a><strong> 命令创建skills </strong><strong>(anthropic官方skills)</strong></p><p id="u4d945be9" class="ne-p" style="text-align: left; line-height: 1.5">适合用来封装这种东西：</p><p id="u0348724b" class="ne-p" style="text-align: left; line-height: 1.5">● 你的个人编码风格 / review 风格</p><p id="u35eea698" class="ne-p" style="text-align: left; line-height: 1.5">● 项目特有的“验证步骤”（例如检查某个业务流程）</p><p id="ud4104aea" class="ne-p" style="text-align: left; line-height: 1.5">● 常用的小工具脚本（跑静态检查、生成数据等）</p><h2 id="36fc18df" style="text-align: left; line-height: 1.5"><strong>9.</strong><strong> </strong><strong>每个 skill 写一个 “Gotchas” 区，专门记录翻车点 </strong></h2><p id="u7709a700" class="ne-p" style="text-align: left; line-height: 1.5">在 SKILL.md 里加一个 “Gotchas” section，专门写“Claude 之前在哪些地方栽过跟头”。</p><p id="u353fe8a5" class="ne-p" style="text-align: left; line-height: 1.5">比如：</p><p id="u338e77f0" class="ne-p" style="text-align: left; line-height: 1.5">● 容易漏掉哪几种边界 case</p><p id="u277cc7d3" class="ne-p" style="text-align: left; line-height: 1.5">● 哪个配置改动后要同步调整哪里</p><p id="u06cab74a" class="ne-p" style="text-align: left; line-height: 1.5">● 哪段代码千万别自动重构</p><p id="ua9bd1472" class="ne-p" style="text-align: left; line-height: 1.5">Claude 会特别关注这块内容，能明显减少重复犯错。</p><h2 id="d818b820" style="text-align: left; line-height: 1.5"><strong>10.</strong><strong> </strong><strong>出问题时多用</strong><strong>‎/rewind</strong><strong>回到 checkpoint </strong></h2><p id="ub2b84741" class="ne-p" style="text-align: left; line-height: 1.5">Claude Code 自带 git-based checkpointing。</p><p id="u5fd6f6ff" class="ne-p" style="text-align: left; line-height: 1.5">当你发现“模型越改越乱”“理解彻底跑偏”时，与其在当前上下文里拼命补救，不如直接 ‎<strong>/rewind</strong>回到之前正确的状态，再继续。</p></details>
+# 代码
+不需要等到有经验之后，才能写出这种提示词。
+
+实际上，刚开始学习时，你完全可以把 AI 当成“方案讨论伙伴”：
+
+你描述需求，AI 帮你拆解问题、列出方案和风险；你通过对比做决定；AI 再根据最终方案写代码。
+
+这比要求自己一开始就独立设计所有方案更现实。
+
+不过要注意一点：
+
+“让 AI 给方案”不是把决策完全交给 AI，而是让 AI 帮你扩大选择范围、解释取舍，最后由你选择一个自己能解释和验证的方案。
+
+## 新手最适合的工作方式
+可以按照这五步来：
+
+```plain
+描述需求
+→ 让 AI 追问和补全
+→ 让 AI 列出多个方案
+→ 对比复杂度、风险和学习价值
+→ 选择方案后让 AI 实现
+```
+
+### 第一步：先描述目标，不急着设计
+你不需要一开始就说 `useState` 应该怎么设计，可以先这样描述：
+
+```plain
+我想做一个本地 Mock 聊天页面，用来学习 React。
+
+功能：
+- 显示用户和助手消息；
+- 用户可以输入内容并发送；
+- 发送期间显示 Loading；
+- Mock 请求可能失败，需要显示错误；
+- 失败后可以再次发送；
+- 暂时不接入真实模型；
+- 我是 React 初学者，但有 Go 后端基础。
+
+请先不要写代码。
+请帮我拆解这个需求，并指出我还没有说明的地方。
+```
+
+这时 AI 应该帮助你发现：
+
++ 消息数据需要哪些字段？
++ 错误后是否保留用户消息？
++ Loading 时能否重复点击？
++ Mock 回复延迟多久？
++ 是否需要清空聊天？
++ 是否需要消息持久化？
++ 是否需要拆组件？
+
+这一步的重点是让需求变清楚。
+
+## 第二步：让 AI 给出多个方案
+可以明确要求它不要只给一个答案：
+
+```plain
+请针对这个聊天页面给出 3 种实现方案：
+
+方案 A：最简单，适合第一次学习；
+方案 B：组件拆分更清晰，方便后续接入真实模型；
+方案 C：更接近生产项目，但复杂度更高。
+
+请对每个方案说明：
+1. 组件如何拆；
+2. 状态如何管理；
+3. 代码复杂度；
+4. 学习价值；
+5. 后续扩展性；
+6. 可能的问题；
+7. 适合什么情况。
+
+最后请推荐一个最适合当前阶段的方案，但不要替我做最终决定。
+```
+
+对于你的聊天页面，AI 可能给出：
+
+| 方案 | 结构 | 适合情况 |
+| --- | --- | --- |
+| A | 一个组件，所有状态都在页面内 | 第一次理解 React 状态 |
+| B | `ChatPage`
+、`MessageList`
+、`MessageInput` | 推荐，结构和复杂度平衡 |
+| C | 自定义 Hook、状态机、独立请求层 | 有一定 React 经验后 |
+
+作为初学者，你可以选择 B，因为它不会太复杂，又能体现状态和组件之间的关系。
+
+## 第三步：不要只问“哪个最好”
+“最好”通常没有意义。你应该告诉 AI 你的评价标准：
+
+```plain
+我目前最看重：
+1. 容易理解；
+2. 能够自己修改；
+3. 后续方便接入 Vercel AI SDK；
+4. 不引入额外状态管理库；
+5. 不要为了架构而架构。
+
+请按照这五个标准重新比较。
+```
+
+这样 AI 的建议会更符合你的阶段，而不是默认给你一套看似“生产级”的复杂方案。
+
+## 第四步：让 AI 反驳你的选择
+你选完以后，可以继续问：
+
+```plain
+我选择方案 B：
+
+- ChatPage 管理 messages、input、status、error；
+- MessageList 只负责展示；
+- MessageInput 负责输入和触发发送；
+- 使用 Mock Promise 模拟请求；
+- 暂时不做数据库和流式输出。
+
+请不要立刻写代码。
+先检查这个方案：
+1. 有没有明显设计问题；
+2. 哪些异常场景没有覆盖；
+3. 哪些地方未来接入真实模型时可能需要调整；
+4. 是否存在不必要的复杂度。
+```
+
+这一步很重要，因为你不是只听 AI 说“这样很好”，而是要求它主动挑战你的方案。
+
+## 第五步：你拍板，然后让 AI 实现
+等你确认设计后：
+
+```plain
+我确认采用上面的方案。
+
+请严格按照这个设计实现，不要增加数据库、登录、Markdown、流式输出或第三方状态管理。
+
+实现顺序：
+1. 先实现 Message 类型；
+2. 再实现 ChatPage 的状态；
+3. 再实现 MessageList；
+4. 最后实现 MessageInput；
+5. 每完成一步说明修改内容和验证方式。
+```
+
+这样 AI 是在执行你的方案，而不是边写代码边替你决定整个架构。
+
+## 如果你看不懂 AI 给出的方案怎么办
+不要要求 AI 用更复杂的术语解释，而是要求它和你熟悉的 Go 对比：
+
+```plain
+我是 Go 后端开发者。
+
+请把这三个 React 方案类比成 Go 后端中的：
+- Handler；
+- Service；
+- Repository；
+- 全局状态；
+- 请求上下文。
+
+告诉我这个类比哪里成立，哪里不成立。
+```
+
+或者：
+
+```plain
+请假设我完全没写过 React，只知道 Go。
+
+不要使用“声明式”“响应式”“组件化”这种术语直接结束解释。
+请用一个具体的用户操作，描述数据从输入框经过哪些函数，最后如何显示到页面上。
+```
+
+## 新手怎么避免被 AI 的“自信答案”误导
+方案对比时要求 AI 给出这些内容：
+
++ 优点。
++ 缺点。
++ 适用前提。
++ 迁移成本。
++ 失败案例。
++ 什么时候不应该使用。
++ 最小可运行版本。
++ 验证方法。
+
+如果 AI 只说“方案 C 更优雅、更适合扩展”，但没有说明为什么，那还不算有效分析。
+
+而且最终仍然要通过：
+
++ 官方文档确认 API。
++ 实际运行验证。
++ 测试确认边界。
++ 阅读代码和 Trace。
++ 自己做一次修改。
+
+## 你可以固定使用的“新手方案讨论模板”
+以后遇到不知道怎么设计的功能，可以直接套这个模板：
+
+```plain
+我的背景：
+- 我会 Go 后端；
+- 正在学习 TypeScript、React 和 Agent；
+- 当前目标是理解原理，不追求一次做到生产级。
+
+我的需求：
+[描述功能]
+
+约束：
+- [技术栈]
+- [时间限制]
+- [暂时不做的功能]
+- [不能引入的复杂度]
+
+请先不要写代码，按以下步骤回答：
+
+1. 用简单语言复述我的需求；
+2. 找出需求中的歧义；
+3. 向我提出最多 5 个关键问题；
+4. 给出 2～3 个实现方案；
+5. 比较每个方案的复杂度、学习价值、扩展性和风险；
+6. 推荐一个最适合初学阶段的方案；
+7. 说明这个推荐方案未来可能遇到的限制；
+8. 给出验收标准。
+
+等我确认方案后，再开始写代码。
+```
+
+这已经足够支持你完成大多数学习项目。
+
+## 判断你是否在真正学习
+让 AI 给方案没有问题，关键在于你最后能否做到：
+
++ 说出自己为什么选择这个方案。
++ 解释另外两个方案为什么暂时不选。
++ 指出当前方案的局限。
++ 根据新需求修改方案。
++ 看出 AI 是否偷偷偏离设计。
++ 通过测试验证实现。
+
+所以你现在不需要等“有经验了再做设计”。经验本来就是通过这种过程积累的：
+
+```plain
+先提出需求
+→ 让 AI 帮你展开可能性
+→ 对比方案
+→ 做出一个暂时的选择
+→ 实现
+→ 观察失败
+→ 重新判断
+```
+
+刚开始做出的选择不一定是最优的，这很正常。真正重要的是，你的选择越来越有依据，而不是越来越依赖 AI 的一句“推荐方案”。
+
+# 如何正确配合 AI 学习
+AI 不应该只有“代写代码”这一个角色。你应该让它轮流扮演五种角色。
+
+### 老师：解释当前代码
+使用这个提示词：
+
+```plain
+你是我的 TypeScript/Agent 开发老师。
+
+我的背景是 Go 后端，会基础编程，但刚接触 TypeScript 和 Next.js。
+
+请结合我当前项目里的这段代码解释：
+1. 这段代码解决什么问题；
+2. 数据如何流动；
+3. 哪些部分对应我熟悉的 Go 概念；
+4. 最容易出错的三个地方；
+5. 给我一道需要亲自修改代码的小练习。
+
+先不要直接给练习答案。
+```
+
+重点是结合当前项目解释，不要让它从语言历史开始讲。
+
+### 结对程序员：先计划再改代码
+```plain
+请先不要修改代码。
+
+先完成：
+1. 阅读相关文件；
+2. 用自己的话复述需求；
+3. 列出最小修改范围；
+4. 写出验收标准；
+5. 指出可能破坏的现有行为；
+6. 说明需要运行哪些测试。
+
+我确认方案后，再进行实现。
+```
+
+避免一句“帮我实现 Agent”让 AI 一次生成几千行代码。
+
+每次修改最好控制在：
+
++ 一个功能。
++ 3～5 个文件。
++ 一个可以独立验证的目标。
++ 一个 Git commit。
+
+### 调试助手：要求先提出假设
+```plain
+现在出现了以下错误。
+
+不要立即重写代码，也不要一次提出十种修改。
+
+请先：
+1. 根据日志提出三个可能原因；
+2. 按可能性排序；
+3. 为每个原因设计一个最小验证方法；
+4. 先执行不会修改数据的诊断；
+5. 找到证据后再提出最小修复方案。
+```
+
+这样可以避免 AI 遇到错误就不断改 Prompt、升级依赖或大规模重构。
+
+### Reviewer：专门找问题
+```plain
+请以严格代码审查者的身份检查本次 diff。
+
+优先寻找：
+1. 行为错误；
+2. 并发和竞态问题；
+3. 超时与资源泄漏；
+4. 工具重复执行；
+5. 权限和 Prompt Injection 风险；
+6. 缺失的错误处理；
+7. 测试盲区。
+
+不要先总结代码做了什么，先列出具体问题，并给出文件和行号。
+```
+
+实现代码的对话和 Review 代码的对话最好分开，减少 AI 对自己方案的偏爱。
+
+### 面试官：检查你是否真的理解
+每周末让 AI 进行一次不提示答案的面试：
+
+```plain
+请针对我这周实现的 Agent 项目进行一次 30 分钟模拟面试。
+
+要求：
+1. 一次只问一个问题；
+2. 根据我的回答继续追问；
+3. 至少追问到“为什么”和“如何验证”；
+4. 不要因为我用了正确术语就判定我理解；
+5. 重点检查工具调用、错误处理、上下文、Eval 和工程取舍；
+6. 面试结束后给出能力评分和薄弱点。
+```
+
+如果某个概念只能在 AI 提示下讲出来，说明还没有真正掌握。
+
+---
+
+### 每次开发的固定闭环
+建议把每个任务都按照这个循环执行：
+
+```plain
+提出需求
+  → 自己写验收标准
+  → 让 AI 复述需求
+  → AI 给最小方案
+  → 小范围实现
+  → AI 跑测试
+  → 自己读 Diff
+  → 让 AI 解释不懂的代码
+  → 主动制造失败
+  → 阅读 Trace
+  → 修复
+  → 写复盘
+```
+
+每次都保存四样东西：
+
++ 需求和验收标准。
++ 关键 Git diff。
++ 失败日志或 Trace。
++ 最终复盘。
+
+这些内容后来都会变成面试素材。
+
+## 每周复盘模板
+每周日用 30～60 分钟回答：
+
+```plain
+# 本周复盘
+
+## 我实现了什么
+
+## 我现在能独立解释什么
+
+## AI 替我写了哪些代码
+
+## 哪些代码我还解释不清楚
+
+## 本周三个失败案例
+
+## 每个失败是怎么定位的
+
+## 哪个方案看起来正确但实际上无效
+
+## 本周新增了哪些测试
+
+## 指标发生了什么变化
+
+## 下周最重要的一个目标
+
+## 如果面试官追问，我最害怕被问什么
+```
+
+“最害怕被问什么”通常就是下周最应该补的地方。
+
+最后，你这两个月真正要追求的不是“学过 Vercel AI SDK、MCP、RAG、LangGraph”，而是：
+
+我用这些东西解决了一个具体问题，并且能拿出代码、Trace、失败案例、Eval 和指标证明它确实有效。  
+
+# AI coding
+人做的核心事情是在每一个岔路口做决策。这些判断对人来说是「无感的」——因为我们有常识、经验、对系统的整体理解。AI 没有，所以它要么问你（打断节奏），要么猜（容易猜错）。
+
+  
+**人在「判断」上的参与，到底有多少是不可替代的，又有多少只是信息没有流通造成的？**
+
+| **阶段** | **AI 现在能做的** | **人还在做的** |
+| :--- | :--- | :--- |
+| 需求分析 | 整理需求文档 | 判断需求是否真实、优先级、和业务目标的对齐 |
+| 方案设计 | 给架构建议、写设计文档 | 做 trade-off 判断：性能 vs 成本、速度 vs 稳定性 |
+| 编码 | ✅ 核心能力，已经很强 | 代码审查、确保符合团队规范 |
+| 测试 | 生成单测、集成测试 | 设计测试策略、判断边界 case 是否覆盖 |
+| 部署 | 写 CI/CD 配置 | 判断什么时候该发、什么时候该回滚 |
+| 线上运维 | 监控告警、日志分析 | 判断告警是否真实、影响范围 |
+
+传统研发流程里很多环节，其实都是在补偿人的局限：
+
++ **前后端分离**——一个人很难同时精通两端。
++ **接口文档**——沟通成本太高，必须有书面契约。
++ **需求评审会**——需求传递链条太长，理解偏差需要人工对齐。
++ **联调阶段**——双方开发节奏不同，必须凑在一起跑通。  
+![](/images/yuque/a7bbb4a601adb919.png)
+
+### 需注意的点
+1. **需求模糊导致大量返工**
+    1. 需求写得多清楚，AI 就能做得多准确；需求描述一旦模糊，哪怕 AI 代码写得再快，最终也是返工。 
+    2. 如何让 AI 在需求不完整时主动追问补背景，而不是闷头干、最后漏东西
+        1. **先复述理解**。在任何追问之前，AI 先用自己的话把需求的核心意图重新表述一遍，让提需求的人确认有没有理解偏。这一步看起来简单，却是最高效的纠偏点——大量返工的根源，就是 AI 带着错误的初始理解一路执行到底。
+        2. **顺着回答继续挖**。不走预设清单式的机械流程，而是基于用户上一轮的回答，挖出回答里新暴露的模糊点。这更接近一个资深 PM 和用户做访谈的方式。
+        3. **对极模糊需求做发散收敛**。当需求描述模糊到无法判断意图时，AI 会列出 2~3 种「这个需求可能是想要什么」的合理解释，让用户选择或补充，而不是直接驳回。
+        4. **区分「必须明确」和「建议明确」**。做什么、为谁做、关键业务规则、验收标准——这四项是放行的必要条件。优先级、异常场景等是建议补充但不强制  
+![](/images/yuque/6aa002d17c803f23.png)
+2. **技术方案**
+    1. **按依赖图排序，不按重要性排序**
+
+实现步骤必须按依赖关系自底向上：数据库表 / 存储模型 → 协议 / 接口 → 业务逻辑 → 调用方 / 前端。
+
+    2. **垂直切片优先**
+
+按一条完整功能路径切分步骤（建表 + 接口 + 最小可用逻辑 = 一个可验证切片），而不是「先把所有表建完、再把所有接口写完」。
+
+    3. **任务粒度控制**
+
+单个实现步骤如果预计触碰超过 5 个文件，或跨 2 个以上独立子系统，必须拆成更细的子步骤。
+
+    4. **插入检查点	**
+
+每 2~3 个步骤后，明确写一个验证节点（「此处应能 `go build ./...` 通过」「此处接口应能跑通基本 CRUD」）。
+
+## 让ai写代码的三条纪律
+1. **简单优先，抵抗过度设计**
+2. **范围纪律，只碰该碰的**
+3. **关键路径先写测试，再实现**
+4. ****
