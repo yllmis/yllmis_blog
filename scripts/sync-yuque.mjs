@@ -15,6 +15,8 @@ const GARDEN_DIR = path.join(ROOT, "content", "garden");
 const IMAGES_DIR = path.join(ROOT, "public", "images", "yuque");
 const API_BASE = "https://www.yuque.com/api/v2";
 
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function loadLocalEnv() {
   const envFile = path.join(ROOT, ".env.local");
   try {
@@ -35,13 +37,45 @@ async function loadLocalEnv() {
   }
 }
 
-async function yuqueGet(endpoint, token) {
+async function loadExistingCatalog() {
+  try {
+    const raw = await fs.readFile(path.join(GARDEN_DIR, "catalog.json"), "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function yuqueGet(endpoint, token, attempt = 0) {
   const res = await fetch(`${API_BASE}${endpoint}`, {
     headers: {
       "X-Auth-Token": token,
       "User-Agent": "yllmis-blog-sync/1.0",
     },
   });
+
+  if ((res.status === 429 || res.status >= 500) && attempt < 5) {
+    const retryAfterSec = Number(res.headers.get("retry-after"));
+    const waitMs =
+      Number.isFinite(retryAfterSec) && retryAfterSec > 0
+        ? retryAfterSec * 1000
+        : Math.min(30000, 2000 * Math.pow(2, attempt));
+    console.warn(
+      `[yuque-sync] ${res.status} on ${endpoint}, retrying in ${Math.round(waitMs / 1000)}s (attempt ${attempt + 1}/5)...`,
+    );
+    await sleep(waitMs);
+    return yuqueGet(endpoint, token, attempt + 1);
+  }
+
   if (!res.ok) {
     throw new Error(`Yuque API ${endpoint} failed with status ${res.status}`);
   }
@@ -59,6 +93,13 @@ async function localizeImages(markdown) {
 
   for (const url of urls) {
     try {
+      const guessedName = buildLocalImageFilename(url);
+      const guessedPath = path.join(IMAGES_DIR, guessedName);
+      if (await fileExists(guessedPath)) {
+        updated = updated.split(url).join(`/images/yuque/${guessedName}`);
+        continue;
+      }
+
       const res = await fetch(url, {
         headers: {
           Referer: "https://www.yuque.com/",
@@ -111,8 +152,16 @@ async function main() {
     throw new Error("缺少 YUQUE_TOKEN 环境变量，无法同步语雀知识库");
   }
 
+  const prevCatalog = await loadExistingCatalog();
+  const prevReposMap = new Map(
+    (prevCatalog?.repos || []).map((r) => [r.slug, r]),
+  );
+
   console.log(`[yuque-sync] Fetching public repos for @${login}...`);
-  const allRepos = await yuqueGet(`/users/${encodeURIComponent(login)}/repos?type=Book`, token);
+  const allRepos = await yuqueGet(
+    `/users/${encodeURIComponent(login)}/repos?type=Book`,
+    token,
+  );
   const publicRepos = (allRepos || []).filter(
     (repo) => isRepoSyncAllowed(repo, allowlist) && safeSlug(repo.slug),
   );
@@ -123,10 +172,10 @@ async function main() {
 
   await fs.mkdir(GARDEN_DIR, { recursive: true });
   const catalogRepos = [];
-  let totalDocs = 0;
+  let fetchedDocs = 0;
+  let skippedDocs = 0;
   let totalImages = 0;
 
-  // 追踪本次同步存在的仓库目录，清理已取消公开/删除的旧同步目录
   const activeRepoSlugs = new Set();
 
   for (const repo of publicRepos) {
@@ -138,8 +187,8 @@ async function main() {
 
     const repoPath = `${encodeURIComponent(login)}/${encodeURIComponent(repoSlug)}`;
     const tocRaw = await yuqueGet(`/repos/${repoPath}/toc`, token);
+    await sleep(300);
 
-    // 分页拉取全部文档列表（每页 100 条，兼容大规模知识库）
     const docsList = [];
     for (let offset = 0; offset < 2000; offset += 100) {
       const batch = await yuqueGet(
@@ -149,6 +198,7 @@ async function main() {
       if (!Array.isArray(batch) || batch.length === 0) break;
       docsList.push(...batch);
       if (batch.length < 100) break;
+      await sleep(300);
     }
 
     // 严格仅同步「已发布且公开」的文档（status === 1 && public === 1）
@@ -156,12 +206,32 @@ async function main() {
       (doc) => doc.status === 1 && doc.public === 1 && safeSlug(doc.slug),
     );
 
+    const prevDocsMap = prevReposMap.get(repoSlug)?.docs || {};
     const validDocSlugs = new Set();
     const docMetaMap = {};
     let latestUpdated = "";
 
     for (const summary of publishedDocs) {
       const docSlug = String(summary.slug);
+      const summaryUpdatedRaw = String(summary.updated_at || summary.published_at || "");
+      const docFilePath = path.join(repoDir, `${docSlug}.md`);
+      const prevMeta = prevDocsMap[docSlug];
+
+      // 增量跳过：文档 updated_at 未变且本地文件存在时无需重复拉取详情
+      if (
+        prevMeta &&
+        prevMeta.updatedAtRaw &&
+        prevMeta.updatedAtRaw === summaryUpdatedRaw &&
+        (await fileExists(docFilePath))
+      ) {
+        validDocSlugs.add(docSlug);
+        docMetaMap[docSlug] = prevMeta;
+        if (prevMeta.date > latestUpdated) latestUpdated = prevMeta.date;
+        skippedDocs += 1;
+        continue;
+      }
+
+      await sleep(350);
       const detail = await yuqueGet(
         `/repos/${repoPath}/docs/${encodeURIComponent(docSlug)}`,
         token,
@@ -173,7 +243,8 @@ async function main() {
       const { markdown: localizedBody, downloaded } = await localizeImages(cleaned);
       totalImages += downloaded;
 
-      const updatedAt = formatDate(detail.updated_at || detail.published_at);
+      const updatedAtRaw = String(detail.updated_at || detail.published_at || "");
+      const updatedAt = formatDate(updatedAtRaw);
       if (updatedAt > latestUpdated) latestUpdated = updatedAt;
 
       const cleanSummary = String(detail.description || "")
@@ -189,17 +260,18 @@ async function main() {
       };
 
       const fileContent = matter.stringify(localizedBody, frontmatter);
-      await fs.writeFile(path.join(repoDir, `${docSlug}.md`), fileContent, "utf8");
+      await fs.writeFile(docFilePath, fileContent, "utf8");
 
       validDocSlugs.add(docSlug);
       docMetaMap[docSlug] = {
         slug: docSlug,
         title: frontmatter.title,
         date: updatedAt,
+        updatedAtRaw,
         summary: cleanSummary,
         yuqueUrl: frontmatter.yuqueUrl,
       };
-      totalDocs += 1;
+      fetchedDocs += 1;
     }
 
     // 清理该知识库下已被语雀删除或转为私密的旧 .md 文件
@@ -245,7 +317,7 @@ async function main() {
   );
 
   console.log(
-    `[yuque-sync] Done! Synced ${catalogRepos.length} repo(s), ${totalDocs} public doc(s), ${totalImages} localized image(s).`,
+    `[yuque-sync] Done! Synced ${catalogRepos.length} repo(s), fetched ${fetchedDocs} doc(s), skipped ${skippedDocs} unchanged doc(s), downloaded ${totalImages} image(s).`,
   );
 }
 
