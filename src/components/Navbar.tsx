@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 const navItems = [
   { href: "/home", label: "主页" },
   { href: "/posts", label: "文章" },
+  { href: "/garden", label: "知识库" },
   { href: "/diary", label: "日记" },
 ];
 

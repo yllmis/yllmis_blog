@@ -1,16 +1,19 @@
 import { resolveAvatarSrc } from "@/lib/avatar";
 import { getContentStore } from "@/lib/content";
+import { getGardenCatalog } from "@/lib/garden";
 import { LandingCover } from "@/components/LandingCover";
 
 export const dynamic = "force-dynamic";
 
 export default async function CoverPage() {
   const store = getContentStore();
-  const [posts, diaries] = await Promise.all([
+  const [posts, diaries, gardenCatalog] = await Promise.all([
     store.list("posts"),
     store.list("diary"),
+    getGardenCatalog(),
   ]);
   const avatarSrc = resolveAvatarSrc();
+  const gardenCount = gardenCatalog.repos.reduce((sum, r) => sum + r.docCount, 0);
 
   // 提取前 3 个高频文章标签（供左侧微档案直达）
   const tagCounts = new Map<string, number>();
@@ -39,6 +42,7 @@ export default async function CoverPage() {
       avatarSrc={avatarSrc}
       postCount={posts.length}
       diaryCount={diaries.length}
+      gardenCount={gardenCount}
       totalReadingMinutes={totalReadingMinutes}
       topTags={topTags}
       recentFeed={recentFeed}

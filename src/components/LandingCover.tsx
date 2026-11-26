@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
+  BookMarked,
   BookOpen,
   CalendarDays,
   Check,
@@ -24,6 +25,7 @@ interface LandingCoverProps {
   avatarSrc: string | null;
   postCount: number;
   diaryCount: number;
+  gardenCount: number;
   totalReadingMinutes: number;
   topTags: string[];
   recentFeed: ContentMeta[];
@@ -141,6 +143,7 @@ export function LandingCover({
   avatarSrc,
   postCount,
   diaryCount,
+  gardenCount,
   totalReadingMinutes,
   topTags,
   recentFeed,
@@ -636,6 +639,13 @@ export function LandingCover({
           >
             <BookOpen className="h-3.5 w-3.5" />
             文章 ({postCount})
+          </Link>
+          <Link
+            href="/garden"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-stone-300 backdrop-blur-md transition-colors hover:border-sky-300/40 hover:bg-sky-400/15 hover:text-white"
+          >
+            <BookMarked className="h-3.5 w-3.5" />
+            知识库 ({gardenCount})
           </Link>
           <Link
             href="/diary"

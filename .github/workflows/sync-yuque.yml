@@ -1,0 +1,51 @@
+name: Sync Yuque Garden
+
+on:
+  schedule:
+    # 每 6 小时自动同步一次语雀公开知识库
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-yuque
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync public Yuque repos
+        env:
+          YUQUE_TOKEN: ${{ secrets.YUQUE_TOKEN }}
+          YUQUE_LOGIN: yllmis
+        run: npm run sync:yuque
+
+      - name: Commit and push synced garden updates
+        run: |
+          if [ -z "$(git status --porcelain content/garden public/images/yuque)" ]; then
+            echo "No Yuque garden changes detected."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/garden public/images/yuque
+          git commit -m "chore(garden): sync public notes from Yuque"
+          git pull --rebase origin main
+          git push origin main
