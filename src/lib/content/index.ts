@@ -4,7 +4,9 @@ import type { ContentStore } from "./types";
 
 export type { ContentItem, ContentMeta, ContentStore, ContentType, SaveContentInput } from "./types";
 export { StoreConflictError } from "./github-store";
-export { validateContentType, validateSlug } from "./markdown";
+export { countWords, validateContentType, validateSlug } from "./markdown";
+export { extractToc } from "./toc";
+export type { TocItem } from "./toc";
 
 export function getContentStore(): ContentStore {
   const token = process.env.GITHUB_TOKEN?.trim();

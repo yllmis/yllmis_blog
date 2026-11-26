@@ -52,6 +52,20 @@ export function estimateReadingMinutes(body: string): number {
   return Math.max(1, Math.ceil(minutes));
 }
 
+/** 统计正文字数：中文按字计，英文按词计（不含代码块与 Markdown 符号） */
+export function countWords(body: string): number {
+  const plain = body
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/[#>*_~\-\[\]()!|]/g, " ");
+  const cjkCount = (plain.match(/[\u4e00-\u9fff]/g) ?? []).length;
+  const latinWords = (
+    plain.replace(/[\u4e00-\u9fff]/g, " ").match(/[A-Za-z0-9]+(?:['.][A-Za-z0-9]+)*/g) ?? []
+  ).length;
+  return cjkCount + latinWords;
+}
+
 export function parseMarkdown(
   type: ContentType,
   slug: string,
@@ -69,6 +83,7 @@ export function parseMarkdown(
     tags: normalizeTags(data.tags),
     mood: typeof data.mood === "string" && data.mood.trim() ? data.mood.trim() : undefined,
     readingMinutes: estimateReadingMinutes(cleanBody),
+    wordCount: countWords(cleanBody),
     sha,
     body: cleanBody,
   };
