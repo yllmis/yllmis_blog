@@ -182,7 +182,7 @@ export function TableOfContents({
         </div>
         <div
           ref={scrollContainerRef}
-          className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1"
+          className="thin-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1.5"
         >
           <ul className="space-y-1 border-l border-stone-200/90 dark:border-stone-800">
             {items.map((item) => {

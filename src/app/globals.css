@@ -122,6 +122,38 @@ html[data-wuwa-seen="1"] .wuwa-initial-gate {
   display: none !important;
 }
 
+/* 极细滚动条（目录等悬浮玻璃面板使用；Firefox 走标准属性，避免 Chromium 忽略 webkit 宽度） */
+@supports (-moz-appearance: none) {
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 162, 158, 0.35) transparent;
+  }
+  .dark .thin-scrollbar {
+    scrollbar-color: rgba(148, 163, 184, 0.28) transparent;
+  }
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background-color: rgba(168, 162, 158, 0.3);
+}
+.thin-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 113, 108, 0.5);
+}
+.dark .thin-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.24);
+}
+.dark .thin-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-avatar-breathe,
   .animate-ring-pulse,
