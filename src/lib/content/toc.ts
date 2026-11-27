@@ -63,3 +63,52 @@ export function extractToc(markdown: string): TocItem[] {
 
   return items;
 }
+
+/**
+ * 计算使当前高亮目录项居中的目标 scrollTop：
+ * - 前半段（未过容器垂直中线）：保持在顶部 0（从头开始）；
+ * - 中间段：平滑居中（保持在容器垂直中间）；
+ * - 末尾段：贴底停止，不越界。
+ */
+export function computeCenteredScrollTop(params: {
+  itemTopInScroll: number;
+  itemHeight: number;
+  containerHeight: number;
+  scrollHeight: number;
+}): number {
+  const { itemTopInScroll, itemHeight, containerHeight, scrollHeight } = params;
+  const maxScrollTop = Math.max(0, scrollHeight - containerHeight);
+  if (maxScrollTop === 0) return 0;
+
+  const itemCenter = itemTopInScroll + itemHeight / 2;
+  const target = itemCenter - containerHeight / 2;
+  return Math.max(0, Math.min(target, maxScrollTop));
+}
+
+/**
+ * 根据各标题相对视口顶部的距离，确定当前处于阅读位置的标题 id：
+ * - 长页面滚动到底部时高亮最后一个标题；
+ * - 否则取最后一个已越过激活线（top <= activationOffset）的标题；
+ * - 若所有标题都在激活线下方（页面顶部）：高亮第一个标题。
+ */
+export function resolveActiveHeadingId(params: {
+  headings: Array<{ id: string; top: number }>;
+  activationOffset: number;
+  atBottom: boolean;
+}): string {
+  const { headings, activationOffset, atBottom } = params;
+  if (headings.length === 0) return "";
+  if (atBottom) {
+    return headings[headings.length - 1].id;
+  }
+
+  let activeId = headings[0].id;
+  for (const heading of headings) {
+    if (heading.top <= activationOffset) {
+      activeId = heading.id;
+    } else {
+      break;
+    }
+  }
+  return activeId;
+}

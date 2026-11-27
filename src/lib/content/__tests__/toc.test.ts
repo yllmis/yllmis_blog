@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { createHeadingIdFactory, extractToc, slugifyHeading } from "../toc";
+import {
+  computeCenteredScrollTop,
+  createHeadingIdFactory,
+  extractToc,
+  resolveActiveHeadingId,
+  slugifyHeading,
+} from "../toc";
 import { countWords } from "../markdown";
 
 describe("slugifyHeading", () => {
@@ -45,5 +51,91 @@ describe("countWords", () => {
     expect(countWords("我在实习 Go 和 AI Agent")).toBe(5 + 3);
     expect(countWords("正文\n```ts\nconst a = 1;\n```")).toBe(2);
     expect(countWords("## 二、想法")).toBe(3);
+  });
+});
+
+describe("computeCenteredScrollTop", () => {
+  it("stays at 0 when content fits inside container", () => {
+    expect(
+      computeCenteredScrollTop({
+        itemTopInScroll: 120,
+        itemHeight: 28,
+        containerHeight: 400,
+        scrollHeight: 320,
+      }),
+    ).toBe(0);
+  });
+
+  it("starts from top, centers active item in the middle, and clamps at bottom", () => {
+    // 顶部前半段：中心点 94 < 容器一半 150 -> 保持在 0（从头开始）
+    expect(
+      computeCenteredScrollTop({
+        itemTopInScroll: 80,
+        itemHeight: 28,
+        containerHeight: 300,
+        scrollHeight: 900,
+      }),
+    ).toBe(0);
+
+    // 中间段：中心点 414 - 容器一半 150 = 264 -> 保持在容器正中
+    expect(
+      computeCenteredScrollTop({
+        itemTopInScroll: 400,
+        itemHeight: 28,
+        containerHeight: 300,
+        scrollHeight: 900,
+      }),
+    ).toBe(264);
+
+    // 末尾段：理论目标 714 > maxScrollTop 600 -> 贴底停在 600
+    expect(
+      computeCenteredScrollTop({
+        itemTopInScroll: 850,
+        itemHeight: 28,
+        containerHeight: 300,
+        scrollHeight: 900,
+      }),
+    ).toBe(600);
+  });
+});
+
+describe("resolveActiveHeadingId", () => {
+  const headings = [
+    { id: "h1", top: -400 },
+    { id: "h2", top: 80 },
+    { id: "h3", top: 320 },
+  ];
+
+  it("picks the last heading at or above activationOffset", () => {
+    expect(
+      resolveActiveHeadingId({
+        headings,
+        activationOffset: 120,
+        atBottom: false,
+      }),
+    ).toBe("h2");
+  });
+
+  it("falls back to first heading when all headings are below offset", () => {
+    expect(
+      resolveActiveHeadingId({
+        headings: [
+          { id: "h1", top: 200 },
+          { id: "h2", top: 500 },
+        ],
+        activationOffset: 120,
+        atBottom: false,
+      }),
+    ).toBe("h1");
+  });
+
+  it("picks the last heading when scrolled to bottom", () => {
+    expect(
+      resolveActiveHeadingId({
+        headings,
+        activationOffset: 120,
+        atBottom: true,
+      }),
+    ).toBe("h3");
   });
 });
