@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-26T12:06:39.245Z",
+  "syncedAt": "2026-11-27T01:22:28.217Z",
   "login": "yllmis",
   "repos": [
     {
@@ -238,6 +238,7 @@
           "slug": "cg6pv1e6boss7k9o",
           "title": "后端知识",
           "date": "2026-08-28",
+          "updatedAtRaw": "2026-08-28T13:14:28.000Z",
           "summary": "状态机核心思想：系统在任何时刻都处于一个状态，当发生某个事件时，会根据规则切换到另一个状态。三个核心要素：状态，事件，状态转换优点：逻辑清晰：每个状态负责自己的行为。容易维护：新增状态或规则时影响较小。 避免非法操作：例如未登录时不能退出登录，电梯开门时不能上行。 广泛应用",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/cg6pv1e6boss7k9o"
         },
@@ -245,6 +246,7 @@
           "slug": "uwpoqnibbr45ct0h",
           "title": "开始前的准备",
           "date": "2026-08-25",
+          "updatedAtRaw": "2026-08-25T04:11:38.000Z",
           "summary": "做这个项目，开发前最应该关注的不是 UI、框架或模型，而是：Agent 到底要完成什么任务，怎样判断它完成得对不对。如果这两件事不清楚，后面很容易变成“先做一个聊天页面，再慢慢想它有什么用”。开发前的优先级1. 先确定一个核心任务第一版不要做“客服处理所有 IM 问题”，只定义一",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/uwpoqnibbr45ct0h"
         },
@@ -252,6 +254,7 @@
           "slug": "kl0qtedppc627m4k",
           "title": "验证",
           "date": "2026-08-25",
+          "updatedAtRaw": "2026-08-25T02:10:50.000Z",
           "summary": "这个方向明显比“面向开发者的故障排查 Agent”更有产品价值。但需要调整一个表述：不要一开始声称“支持市面上大部分 IM 项目”，而应该做成“标准化 IM 支持诊断接口 + 一个自有 IM 适配器”。你的 IM 项目作为第一套真实数据源和验证环境，其他 IM 系统通过适配器接入",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/kl0qtedppc627m4k"
         },
@@ -259,6 +262,7 @@
           "slug": "qhvdz8vrihg3n10d",
           "title": "IM服务排障agent",
           "date": "2026-09-22",
+          "updatedAtRaw": "2026-09-22T13:42:46.000Z",
           "summary": "上下文管理为什么服务端保存完整状态，但模型只看到精简上下文防止上下文过长上下文越长：请求成本越高；速度越慢； 越容易超过模型限制。减少模型被无关信息干扰如果把几十次工具调用全部发给模型，模型可能无法判断当前真正重要的信息。降低敏感数据泄露风险",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/qhvdz8vrihg3n10d"
         },
@@ -266,6 +270,7 @@
           "slug": "ho6mzk4d4qx3cn6w",
           "title": "如何利用ai学习",
           "date": "2026-11-21",
+          "updatedAtRaw": "2026-11-21T15:18:15.000Z",
           "summary": "ai coding 实践需知Claude Code实践经验个人使用经验&amp;外网的经验分享总结。参考文档：https://code.claude.com/docs/en/best-practices",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/ho6mzk4d4qx3cn6w"
         },
@@ -273,6 +278,7 @@
           "slug": "bfgipd77x1frtgxr",
           "title": "项目梳理",
           "date": "2026-10-01",
+          "updatedAtRaw": "2026-10-01T03:59:01.000Z",
           "summary": "1.背景项目背景：2.业务xx业务整体分为 几个 部分，一部分提供 xxx，另一部分提供 xxx2.1 模块一2.2 模块二kafka的削峰填谷Kafka 本身提供了消息持久化、消费进度和积压能力，但它不会根据 MongoDB 的承载能力自动决定消费速率。因此我在消费者侧增加了基",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/bfgipd77x1frtgxr"
         },
@@ -280,6 +286,7 @@
           "slug": "ttwcw662kenldsc6",
           "title": "项目中的软件开发规范",
           "date": "2026-11-21",
+          "updatedAtRaw": "2026-11-21T15:18:55.000Z",
           "summary": "Controller、Service、Repository三层架构Code Agent 项目笔记1. ServiceContext 依赖注入模式Go 项目把所有全局依赖（Config、Logger、HTTP Client 等）打包到一个 struct 里，通过构造函数统一初始化。",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/ttwcw662kenldsc6"
         },
@@ -287,6 +294,7 @@
           "slug": "akyct2u8qsdcyeri",
           "title": "数据库",
           "date": "2026-11-26",
+          "updatedAtRaw": "2026-11-26T12:13:01.000Z",
           "summary": "缓存和数据库一致性文章 https://zhuanlan.zhihu.com/p/408515044小业务：直接写入mysql业务逐渐增加时，需求增加，如果还直接从mysql中读取，会有性能问题引入redis，在小业务和一致性要求不高时",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/akyct2u8qsdcyeri"
         },
@@ -294,6 +302,7 @@
           "slug": "ugfhkss9b4ogg8mr",
           "title": "分布式架构",
           "date": "2026-07-02",
+          "updatedAtRaw": "2026-07-02T05:16:09.000Z",
           "summary": "微服务1. 系统架构的演变单体架构 -&gt; 分成设计 -&gt; 分布式 -&gt; 集群 -&gt; 微服务单体整个程序进行拆分成多个服务，按服务特点拆分成几个微小的2. 核心要素2.1. 拆分原则模块维度：根据系统一类功能聚集在一起的模块",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/ugfhkss9b4ogg8mr"
         },
@@ -301,6 +310,7 @@
           "slug": "qvghpvxgaf9e5fg5",
           "title": "NLP（自然语言处理）",
           "date": "2026-05-30",
+          "updatedAtRaw": "2026-05-30T01:52:42.000Z",
           "summary": "BERT 论文 BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding【BERT 论文逐段精读【论文精读】】语言表示模型 masked langue model （带掩码的模",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/qvghpvxgaf9e5fg5"
         },
@@ -308,6 +318,7 @@
           "slug": "aw970f05z96ceq81",
           "title": "避雷真",
           "date": "2026-11-21",
+          "updatedAtRaw": "2026-11-21T15:18:29.000Z",
           "summary": "模型层拉取的是hfl/chinese-roberta-wwm-ext 用中文数据预训练好的模型，方便接入LORA 拿训练好的 BERT，在你的任务数据上再训练一下，让参数适应你的任务。原始论文的做法是： 预训练好的 BERT (已经知道语言了) ↓ 在你的数据上继续训练（所有参数",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/aw970f05z96ceq81"
         },
@@ -315,6 +326,7 @@
           "slug": "of263vwzlzh48go8",
           "title": "设计架构",
           "date": "2026-06-18",
+          "updatedAtRaw": "2026-06-18T03:40:52.000Z",
           "summary": "登录策略登录单端登录只允许在一台设备上登录，多台设备登录会使之前登录的账号强制下线多端登录允许多台设备登录同端互斥登录在同一类型设备上只允许单地点登录，在不同类型设备上允许同时在线。类似qq限量登录可登录多台设备，但当数量达到上限后，会导致之前的账号下线/提示无法登录注销本质是使",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/of263vwzlzh48go8"
         },
@@ -322,6 +334,7 @@
           "slug": "pmghg1zgdw3x6r3k",
           "title": "Go语言生态",
           "date": "2026-07-02",
+          "updatedAtRaw": "2026-07-02T05:16:37.000Z",
           "summary": "框架WebGin框架Gin框架是基于net/http包实现的，所有应该先对这个包有所了解web框架是基于 客户端-服务端TODO ListGin.Context 为什么用 sync.Pool？不用会怎样？中间件的 c.Next() 和 c.Abort() 如何协作？",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/pmghg1zgdw3x6r3k"
         },
@@ -329,6 +342,7 @@
           "slug": "vkclax70izcx08gz",
           "title": "Agent",
           "date": "2026-10-25",
+          "updatedAtRaw": "2026-10-25T03:24:34.000Z",
           "summary": "了解Agent什么是 Agent?Workflow 是 LLM 和工具被预定义代码路径编排的系统Agent 是 LLM 动态指挥自己的过程和工具使用、保持对”如何完成任务”的控制权的系统",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/vkclax70izcx08gz"
         },
@@ -336,6 +350,7 @@
           "slug": "fw2fs2iast5g04qs",
           "title": "即时通讯系统",
           "date": "2026-07-27",
+          "updatedAtRaw": "2026-07-27T11:04:16.000Z",
           "summary": "业务需求&amp;设计文档群聊 逻辑实现✅客户端接受消息后的Ack确认返回1. 项目需求im聊天服务，可分为三大核心业务用户业务用户登入、注册、详情、查找社交【好友、群】",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/fw2fs2iast5g04qs"
         },
@@ -343,6 +358,7 @@
           "slug": "ibo2skf4aw04sfsh",
           "title": "中间件",
           "date": "2026-10-01",
+          "updatedAtRaw": "2026-10-01T04:03:45.000Z",
           "summary": "分布式键值存储系统etcd认证与鉴权JWThttps://zhuanlan.zhihu.com/p/1932939645169164990一种后台不做存储的前端身份验证的工具分为三部分 Header Claims Signature创建JWT用户登录后，服务器颁发一个 JWT，客",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/ibo2skf4aw04sfsh"
         },
@@ -350,6 +366,7 @@
           "slug": "othg1fu7v34fhdak",
           "title": "前端速学",
           "date": "2026-05-16",
+          "updatedAtRaw": "2026-05-16T12:10:18.000Z",
           "summary": "JSdocument.querySelectorAll()传入选择器.addEventListener()事件监听，不会被覆盖",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/othg1fu7v34fhdak"
         },
@@ -357,6 +374,7 @@
           "slug": "ke0anksf63ug2n9m",
           "title": "操作系统",
           "date": "2026-07-04",
+          "updatedAtRaw": "2026-07-04T08:18:41.000Z",
           "summary": "内存管理物理地址：两个程序引用绝对物理地址是无法同时运行的虚拟地址：把进程所使用的地址隔离开，为每个进程分配一个虚拟地址分段：程序是由若干个逻辑分段组成的，如可由代码分段、数据分段、栈段、堆段组成。不同的段是有不同的属性的，所以就用分段（Segmentation",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/ke0anksf63ug2n9m"
         },
@@ -364,6 +382,7 @@
           "slug": "xdrapqseh2ehgwv9",
           "title": "限流算法",
           "date": "2026-06-15",
+          "updatedAtRaw": "2026-06-15T01:58:20.000Z",
           "summary": "令牌桶算法令牌桶算法就跟病人去医院看病一样，找医生之前需要先挂号，而医院每天放的号是有限的。当天的号用完了，第二天又会放一批号周期性执行下述流程",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/xdrapqseh2ehgwv9"
         },
@@ -371,6 +390,7 @@
           "slug": "gsbydf29mv7rg8ri",
           "title": "FlexiRAG Engine",
           "date": "2026-06-21",
+          "updatedAtRaw": "2026-06-21T10:28:35.000Z",
           "summary": "项目地址：多租户可配置AI知识库作者：yllmis介绍基于go和agent结合的知识库，可以自行选择工具连接，通过配置的AI检索，快速查询所需要获得的信息架构图总体架构应用架构",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/gsbydf29mv7rg8ri"
         },
@@ -378,6 +398,7 @@
           "slug": "et9qxpda75ialggs",
           "title": "FlexiRAG Engine",
           "date": "2026-06-15",
+          "updatedAtRaw": "2026-06-15T01:59:14.000Z",
           "summary": "项目地址：多租户可配置AI知识库作者：yllmis介绍基于go和agent结合的知识库，可以自行选择工具连接，通过配置的AI检索，快速查询所需要获得的信息项目设计接口耦合定义核心接口：LLMProvider接口，VectorScore接口go后端的灵魂：在I/O操作中，将",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/et9qxpda75ialggs"
         },
@@ -385,6 +406,7 @@
           "slug": "grtytbqvsrcucpbz",
           "title": "Docker",
           "date": "2026-05-16",
+          "updatedAtRaw": "2026-05-16T12:11:08.000Z",
           "summary": "命令拉取镜像：docker pull查看……：docekr image基于镜像运行容器：docker run查看构建的容器：docker psdockerfile构建时遇到问题应该怎么办？在运行时可以看到是哪一行出了问题，可以先将这一行及其之后的注",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/grtytbqvsrcucpbz"
         },
@@ -392,6 +414,7 @@
           "slug": "buqps2nr3ygatybf",
           "title": "成长经历",
           "date": "2026-08-08",
+          "updatedAtRaw": "2026-08-08T14:19:06.000Z",
           "summary": "“计算机科学领域的任何问题，都可以通过增加一个间接的中间层来解决。”读书计划《Go Web 编程》（2025.12.20~ ）收获万事先基础最近在看《Go Web 编程》书，遇到很多之前碰到过的一些不理解的地方，在不断通过这些基础知识追问AI后，感觉自己收获了很多。",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/buqps2nr3ygatybf"
         },
@@ -399,6 +422,7 @@
           "slug": "mcwkggv6moq0eho5",
           "title": "计网",
           "date": "2026-06-21",
+          "updatedAtRaw": "2026-06-21T11:25:01.000Z",
           "summary": "基础Web工作方式当我们点开一个网页是，浏览器首先会去请求 DNS 服务器，通过 DNS 服务器获得相应域名的 IP，找到该 IP 对应的服务器后，建立 TCP 连接，等浏览器发送完 HTTP Request（请求）包，服务器接到后开始处理，调用自身服务返回 HTTP Respo",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/mcwkggv6moq0eho5"
         },
@@ -406,6 +430,7 @@
           "slug": "gny439m5vxriuqr3",
           "title": "力扣",
           "date": "2026-10-22",
+          "updatedAtRaw": "2026-10-22T04:05:02.000Z",
           "summary": "小记当数组有序且需要查找某个数时，采用二分查找，时间复杂度O(log n )递归破解递归的核心在于准确界定状态的语义。我们必须明确 dfs(n) 所代表的物理含义，即：针对规模为 n 的子问题，其最终的计算结果或所满足的约束条件是什么",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/gny439m5vxriuqr3"
         },
@@ -413,6 +438,7 @@
           "slug": "vanzagpufghshg46",
           "title": "RBAC权限管理",
           "date": "2026-06-15",
+          "updatedAtRaw": "2026-06-15T01:59:17.000Z",
           "summary": "用户找角色，角色找权限，用户不直接与权限相关个人项目一、核心思路本项目采用标准 RBAC 模型：用户 -&gt; 角色 -&gt; 权限用户不直接绑定权限，通过角色间接获得权限权限校验时以用户当前角色对应的权限集合为准二、项目目标与完成情况目标大纲实现简单登录/注册功能实现用户-",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/vanzagpufghshg46"
         },
@@ -420,6 +446,7 @@
           "slug": "mf1z6z41o6iyv0xn",
           "title": "Go 语言进阶",
           "date": "2026-06-09",
+          "updatedAtRaw": "2026-06-09T01:53:18.000Z",
           "summary": "并发sync.WaitGroup包每个协程开始前要调用Add(1)方法每个协程结束时要调用Done()方法，表示任务已经执行完成主协程中要调用Wait()方法，等待所有协程结束// 并发模式 第二种 使用sync.WaitGroup func GetVoteV5(id int64",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/mf1z6z41o6iyv0xn"
         },
@@ -427,6 +454,7 @@
           "slug": "cg9gn6bimlv8loog",
           "title": "投票系统",
           "date": "2026-05-16",
+          "updatedAtRaw": "2026-05-16T12:10:18.000Z",
           "summary": "项目视频：https://www.bilibili.com/video/BV1Xi421Z72A?spm_id_from=333.788.videopod.sections&amp;vd_source=c24b6c855005f1f78ff149d24cd409f6构建项目day",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/cg9gn6bimlv8loog"
         },
@@ -434,6 +462,7 @@
           "slug": "gbrswvzp690gegbm",
           "title": "Go 语言",
           "date": "2026-08-28",
+          "updatedAtRaw": "2026-08-28T04:21:23.000Z",
           "summary": "const 定义在const()中添加关键字 iota， 每行的 iota都会+1，第一行默认为0 。const( a = iota //1 b //2 c //3 )之后行的公式会跟第一行一样或者新公式以后的行会和新公式一样const(a,b=iota+1,iota+2 // ",
           "yuqueUrl": "https://www.yuque.com/yllmis/uw8ppk/gbrswvzp690gegbm"
         }
