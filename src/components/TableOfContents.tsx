@@ -170,7 +170,7 @@ export function TableOfContents({
 
   return (
     <nav aria-label="文章目录" className="sticky top-28 text-xs">
-      <div className="flex max-h-[calc(100vh-8.5rem)] flex-col rounded-2xl border border-stone-200/70 bg-white/75 p-4 shadow-sm backdrop-blur-xl dark:border-stone-800/70 dark:bg-slate-900/55">
+      <div className="flex max-h-[min(22rem,calc(100vh-11rem))] flex-col rounded-2xl border border-stone-200/70 bg-white/75 p-4 shadow-sm backdrop-blur-xl dark:border-stone-800/70 dark:bg-slate-900/55">
         <div className="mb-3 flex shrink-0 items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-stone-400 dark:text-stone-500">
           <span className="flex items-center gap-1.5">
             <ListTree className="h-3.5 w-3.5" />
