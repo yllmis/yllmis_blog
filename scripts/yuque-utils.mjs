@@ -1,32 +1,191 @@
 import crypto from "crypto";
 
+function decodeHtmlEntities(text) {
+  return text
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'");
+}
+
+/** 将语雀 Lake 折叠块内部常见 HTML 片段转换为干净的标准 Markdown */
+function convertLakeHtmlToMarkdown(html) {
+  let text = String(html || "");
+
+  // 先处理多行 <pre><code>...</code></pre>
+  text = text.replace(
+    /<pre\b[^>]*>\s*(?:<code\b[^>]*>)?([\s\S]*?)(?:<\/code>)?\s*<\/pre>/gi,
+    (_, inner) => {
+      const code = decodeHtmlEntities(inner.replace(/<[^>]+>/g, "")).trim();
+      return `\n\n\`\`\`\n${code}\n\`\`\`\n\n`;
+    },
+  );
+
+  // 处理 <img>
+  text = text.replace(
+    /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*\/?>/gi,
+    (_, src) => `![](${src.split("#")[0]})`,
+  );
+
+  // 处理 <a href="...">label</a>
+  text = text.replace(
+    /<a\b[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,
+    (_, href, label) => {
+      const cleanLabel = label.replace(/<[^>]+>/g, "").trim() || href;
+      return `[${cleanLabel}](${href})`;
+    },
+  );
+
+  // 处理标题 <h1>~<h6>
+  text = text.replace(
+    /<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi,
+    (_, level, inner) => {
+      const clean = inner.replace(/<[^>]+>/g, "").trim();
+      if (!clean) return "\n\n";
+      const hashes = "#".repeat(Math.min(6, Math.max(3, Number(level) + 2)));
+      return `\n\n${hashes} ${clean}\n\n`;
+    },
+  );
+
+  // 处理行内 <code>、<strong|b>、<em|i>、<u>、<br>
+  text = text.replace(/<code\b[^>]*>([\s\S]*?)<\/code>/gi, (_, inner) => {
+    const clean = inner.replace(/<[^>]+>/g, "").trim();
+    return clean ? `\`${clean}\`` : "";
+  });
+  text = text.replace(/<(?:strong|b)\b[^>]*>([\s\S]*?)<\/(?:strong|b)>/gi, (_, inner) => {
+    const clean = inner.trim();
+    return clean ? `**${clean}**` : "";
+  });
+  text = text.replace(/<(?:em|i)\b[^>]*>([\s\S]*?)<\/(?:em|i)>/gi, (_, inner) => {
+    const clean = inner.trim();
+    return clean ? `*${clean}*` : "";
+  });
+  text = text.replace(/<\/?(?:u|font|span|div)(?:\s+[^>]*)?>/gi, "");
+  text = text.replace(/<br\s*\/?>/gi, "\n");
+
+  // 处理有序与无序列表（含语雀嵌套 <ol class="ne-list-wrap">）
+  text = text.replace(/<ol\b[^>]*>([\s\S]*?)<\/ol>/gi, (_, inner) => {
+    let idx = 0;
+    const replaced = inner.replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, (__, liBody) => {
+      idx += 1;
+      const clean = liBody.replace(/<\/?p\b[^>]*>/gi, "").trim();
+      return clean ? `\n${idx}. ${clean}` : "";
+    });
+    return `\n\n${replaced.replace(/<\/?(?:ol|ul)\b[^>]*>/gi, "").trim()}\n\n`;
+  });
+  text = text.replace(/<ul\b[^>]*>([\s\S]*?)<\/ul>/gi, (_, inner) => {
+    const replaced = inner.replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, (__, liBody) => {
+      const clean = liBody.replace(/<\/?p\b[^>]*>/gi, "").trim();
+      return clean ? `\n- ${clean}` : "";
+    });
+    return `\n\n${replaced.replace(/<\/?(?:ol|ul)\b[^>]*>/gi, "").trim()}\n\n`;
+  });
+  // 兜底残留孤立 <li>
+  text = text.replace(/<li\b[^>]*>([\s\S]*?)<\/li>/gi, (_, inner) => {
+    const clean = inner.replace(/<\/?p\b[^>]*>/gi, "").trim();
+    return clean ? `\n- ${clean}` : "";
+  });
+  text = text.replace(/<\/?(?:ol|ul)\b[^>]*>/gi, "\n");
+
+  // 处理段落 <p>
+  text = text.replace(/<p\b[^>]*>([\s\S]*?)<\/p>/gi, (_, inner) => {
+    const clean = inner.trim();
+    return clean ? `\n\n${clean}\n\n` : "\n\n";
+  });
+
+  // 合并相邻加粗碎片（语雀常输出 **2.**** ****using**）
+  text = text.replace(/\*\*\s*\*\*/g, " ");
+
+  return decodeHtmlEntities(text)
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/** 将 <details class="lake-collapse"> 转为安全、标准的 > [!COLLAPSE] 块 */
+function convertLakeDetailsBlocks(text) {
+  return text.replace(
+    /<details\b[^>]*>[\s\S]*?<\/details>/gi,
+    (block) => {
+      const summaryMatch = /<summary\b[^>]*>([\s\S]*?)<\/summary>/i.exec(block);
+      const summaryText = summaryMatch
+        ? decodeHtmlEntities(summaryMatch[1].replace(/<[^>]+>/g, ""))
+            .replace(/\s+/g, " ")
+            .trim()
+        : "展开详情";
+
+      const innerHtml = block
+        .replace(/^<details\b[^>]*>/i, "")
+        .replace(/<\/details>$/i, "")
+        .replace(/<summary\b[^>]*>[\s\S]*?<\/summary>/i, "");
+
+      const innerMd = convertLakeHtmlToMarkdown(innerHtml);
+      const bodyLines = innerMd
+        ? innerMd.split("\n").map((l) => (l.length > 0 ? `> ${l}` : ">"))
+        : [];
+
+      return `\n\n> [!COLLAPSE] ${summaryText}\n>\n${bodyLines.join("\n")}\n\n`;
+    },
+  );
+}
+
 /**
- * 清洗语雀 Lake 导出的 Markdown 中的 HTML 残留标签，保证在禁用 raw HTML 的渲染器下排版干净。
- * 保留代码块内的原始内容不被误伤。
+ * 清洗语雀 Lake 导出的 Markdown 中的 HTML 残留标签与异常缩进，
+ * 保证在禁用 raw HTML 的渲染器下排版干净且不误伤代码块。
  */
 export function cleanYuqueMarkdown(raw) {
   if (!raw) return "";
-  const lines = raw.replace(/\r\n/g, "\n").split("\n");
-  const out = [];
+
+  // 先按围栏代码块切分，确保只清洗代码块之外的文本（支持跨行 <details>）
+  const segments = [];
+  const rawLines = raw.replace(/\r\n/g, "\n").split("\n");
+  let buf = [];
   let inFence = false;
 
-  for (let line of lines) {
+  for (const line of rawLines) {
     if (/^\s*(```|~~~)/.test(line)) {
-      inFence = !inFence;
-      out.push(line);
-      continue;
+      if (!inFence) {
+        if (buf.length > 0) segments.push({ type: "prose", text: buf.join("\n") });
+        buf = [line];
+        inFence = true;
+      } else {
+        buf.push(line);
+        segments.push({ type: "code", text: buf.join("\n") });
+        buf = [];
+        inFence = false;
+      }
+    } else {
+      buf.push(line);
     }
+  }
+  if (buf.length > 0) {
+    segments.push({ type: inFence ? "code" : "prose", text: buf.join("\n") });
+  }
 
-    if (!inFence) {
-      // 将语雀导出的 HTML <img ... src="..."> 转换为标准 Markdown 图片，以便后续本地化转存与安全渲染
+  const cleanedSegments = segments.map((seg) => {
+    if (seg.type === "code") return seg.text;
+
+    let text = seg.text;
+    // 1. 转换语雀 <details class="lake-collapse"> 折叠块
+    text = convertLakeDetailsBlocks(text);
+
+    // 2. 逐行清洗行内语雀 HTML 残留与误触发代码块的异常行首缩进
+    const lines = text.split("\n");
+    const out = [];
+    let prevWasList = false;
+
+    for (let line of lines) {
+      // 将语雀导出的 HTML <img ... src="..."> 转换为标准 Markdown 图片
       line = line.replace(
         /<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*\/?>/gi,
         "![]($1)",
       );
       // 移除语雀自动插入的锚点标签 <a name="..."></a>
       line = line.replace(/<a\s+name="[^"]*"\s*>\s*<\/a>/gi, "");
-      // 展开 <font ...>...</font> 与 <span ...>...</span>，保留内部文字
-      line = line.replace(/<\/?(?:font|span)(?:\s+[^>]*)?>/gi, "");
+      // 展开 <font>, <span>, <u> 标签保留内部文字
+      line = line.replace(/<\/?(?:font|span|u)(?:\s+[^>]*)?>/gi, "");
       // 替换 <br/> / <br> 为换行
       line = line.replace(/<br\s*\/?>/gi, "\n");
       // 清理语雀 Markdown 图片链接后的冗余 hash 参数（#align=left&display=inline...）
@@ -36,12 +195,26 @@ export function cleanYuqueMarkdown(raw) {
       );
       // 清理行内多余制表符缩进（语雀偶发用大量 \t 对齐落款）
       line = line.replace(/\t{2,}/g, "  ");
+
+      const isListLine = /^\s*(?:[-*+]|\d+\.)\s+/.test(line);
+      // 非列表上下文中，去掉行首 >=4 空格或 Tab，避免 CommonMark 将右对齐落款（如 --2026.03.27记）误渲染成代码块
+      if (!isListLine && !prevWasList && /^(?:\t+| {4,})\S/.test(line)) {
+        line = line.trimStart();
+      }
+
+      if (line.trim().length > 0) {
+        prevWasList = isListLine;
+      } else {
+        prevWasList = false;
+      }
+
+      out.push(line);
     }
 
-    out.push(line);
-  }
+    return out.join("\n");
+  });
 
-  return out
+  return cleanedSegments
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();

@@ -6,9 +6,133 @@ summary: >-
   Code实践经验个人使用经验&amp;外网的经验分享总结。参考文档：https://code.claude.com/docs/en/best-practices
 yuqueUrl: 'https://www.yuque.com/yllmis/uw8ppk/ho6mzk4d4qx3cn6w'
 ---
-<details class="lake-collapse"><summary id="u8f2d7ad4">ai coding 实践需知</summary><h1 id="f533c31e" style="text-align: left; line-height: 1.5"><strong>Claude Code实践经验</strong></h1><p id="uebf0ac3f" class="ne-p" style="text-align: left; line-height: 1.5">个人使用经验&amp;外网的经验分享总结。参考文档：</p><p id="ue0c79e79" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://code.claude.com/docs/en/best-practices" data-href="https://code.claude.com/docs/en/best-practices" target="_blank" class="ne-link">https://code.claude.com/docs/en/best-practices</a></p><p id="u21428484" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://github.com/shanraisshan/claude-code-best-practice" data-href="https://github.com/shanraisshan/claude-code-best-practice" target="_blank" class="ne-link">GitHub - shanraisshan/claude-code-best-practice: practice made claude perfect · GitHub</a></p><p id="u276c35ff" class="ne-p">
-</p><h2 id="2.-using-superpowers" style="text-align: left; line-height: 1.5"><strong>2.</strong><strong> </strong><strong>using-superpowers</strong></h2><p id="u3dbd3a59" class="ne-p" style="text-align: left; line-height: 1.5"><a href="https://github.com/obra/superpowers" data-href="https://github.com/obra/superpowers" target="_blank" class="ne-link">https://github.com/obra/superpowers</a></p><p id="u85f5d689" class="ne-p" style="text-align: left; line-height: 1.5">在做一切动作前，在你的输入框上打下 /using-superpowers 主动唤醒该skills</p><p id="u2c3f2129" class="ne-p" style="text-align: left; line-height: 1.5">部分模型对skills的使用不够积极主动，比如minimax</p><h2 id="3e3ec6fe" style="text-align: left; line-height: 1.5"><strong>3.</strong><strong> </strong><strong>做好Context管理</strong></h2><p id="uad56e8ee" class="ne-p" style="text-align: left; line-height: 1.5">上下文对于模型的性能非常非常重要，哪怕是<strong>opus4.6在70-80%context的情况下，表现也会非常差。</strong><strong>有的时候不是模型不行，是你的上下文太冗余了</strong>以下操作帮助你优化上下文：</p><p id="ub925eb92" class="ne-p" style="text-align: left; line-height: 1.5">1、 /context 查看当前的context占比1</p><p id="uecc6f0b9" class="ne-p" style="text-align: left; line-height: 1.5">2、 禁用未使用的mcp，考虑采用CLI替换mcp</p><p id="udb62ee2d" class="ne-p" style="text-align: left; line-height: 1.15">3、  </p><pre data-language="plain" id="R7oIQ" class="ne-codeblock language-plain"><code>curl -LsSf https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu -o ~/bin/uv</code></pre><p id="uf0ea1f9b" class="ne-p" style="text-align: left; line-height: 1.5">4、  </p><p id="u0df43722" class="ne-p" style="text-align: left; line-height: 1.5">5、 不用使用/init来生成超长的<a href="https://CLAUDE.md" data-href="https://CLAUDE.md" target="_blank" class="ne-link">CLAUDE.md</a></p><p id="ud38ef7bc" class="ne-p" style="text-align: left; line-height: 1.5">6、 时刻关注context用量，在超过50%时，考虑使用/compact来压缩上下文</p><p id="u8804f0d7" class="ne-p" style="text-align: left; line-height: 1.5">建议/compact + 定向的描述，让模型针对性的保留重要的上下文</p><p id="ud8ab2029" class="ne-p" style="text-align: left; line-height: 1.5">7、 使用<a href="https://www.rtk-ai.app/" data-href="https://www.rtk-ai.app/" target="_blank" class="ne-link">rtk</a>优化git，ls等命令的无效输出</p><p id="u3495ce7e" class="ne-p" style="text-align: left; line-height: 1.5">![](/images/yuque/8f17fb99903ca910.png)</p><p id="ubcffdc29" class="ne-p" style="text-align: center; line-height: 1.5">左：普通的git log 右：rtk优化后的git log 节省了大量的token</p><p id="u09dc24c0" class="ne-p" style="text-align: left; line-height: 1.5">8、 在指令中多使用<strong>sub agent</strong>执行任务</p><p id="uae7d91a8" class="ne-p" style="text-align: left; line-height: 1.5">9、 切换任务时务必使用 <strong>/clear</strong> 清除上下文</p><h2 id="e45f7ad0" style="text-align: left; line-height: 1.5"><strong>4.</strong><strong> </strong><strong>总结经验教训</strong></h2><p id="u83eef770" class="ne-p" style="text-align: left; line-height: 1.5">在开发过程中，claude code总会犯错的。在犯错后，直接告诉他：</p><pre data-language="plain" id="fX8EN" class="ne-codeblock language-plain"><code>“你犯了什么XXX错,下次不能再犯”
-“记住这一次的教训，不要再犯这个错了”</code></pre><p id="u6ef2cdb2" class="ne-p" style="text-align: left; line-height: 1.5"><strong>Claude Code会将记忆写入memory.md，但是这也会占用context，所以务必控制长度！</strong></p><h2 id="bb77f8bc" style="text-align: left; line-height: 1.5"><strong>5.</strong><strong> </strong><strong>给 Claude 可验证的成功标准</strong></h2><p id="u602d37bd" class="ne-p" style="text-align: left; line-height: 1.5"><strong>让 Claude 能自己检查自己</strong>。</p><p id="ud77d3791" class="ne-p" style="text-align: left; line-height: 1.5">比如提供测试用例、截图对比、明确的期望输出，甚至是脚本或命令（如 ‎`npm test`、lint 命令）。</p><p id="u0151c7b0" class="ne-p" style="text-align: left; line-height: 1.5">如果没有这些验证标准，Claude 很容易给出“看起来对但其实有 bug”的代码，最后只能靠你肉眼审查。</p><p id="uf544211d" class="ne-p" style="text-align: left; line-height: 1.5"><strong>“不要 babysit（不要当保姆）”，少管细节，多让 Claude 自证正确；让 Claude 挑战你、证明修改是对的。</strong></p><h2 id="19a6442a" style="text-align: left; line-height: 1.5"><strong>6.</strong><strong> </strong><strong>使用git worktree并行开发</strong></h2><p id="ud564eb73" class="ne-p" style="text-align: left; line-height: 1.5">在一个 Git 仓库里，你可以用 <strong>git worktree</strong> 开出同一个项目的“多个工作目录”，每个目录对应一个不同的分支。这样：</p><p id="u66f4fd18" class="ne-p" style="text-align: left; line-height: 1.5">● 你可以给每个 agent（或者每个 Claude 会话）分配一个独立的 worktree，相当于每人一套单独的代码副本。</p><p id="uaddc1b43" class="ne-p" style="text-align: left; line-height: 1.5">● 这些 worktree 互相不会干扰：一个 agent 在自己的 worktree 里乱改、乱试验，不会把别人的工作目录搞乱。</p><p id="uab35b998" class="ne-p" style="text-align: left; line-height: 1.5">● 但它们毕竟还是同一个 Git 仓库，分支之间该合并、该 rebase 还是可以正常，最终再把各自的成果合回主干。</p><p id="ucc0e85be" class="ne-p" style="text-align: left; line-height: 1.5"><strong>不用多开一堆重复仓库，就能给每个 agent 一块独立“沙盒”，各写各的分支，最后再合流。</strong></p><h2 id="95bfb312" style="text-align: left; line-height: 1.5"><strong>7.</strong><strong> </strong><strong>经常做的</strong><strong>指令转换为</strong><strong> command </strong></h2><p id="u79f34f07" class="ne-p" style="text-align: left; line-height: 1.5">你一天做不止一次的事情（比如整理 commit、对某类代码做 review、生成 changelog、检查 config），都应该变成 ‎/xxx 命令，写在 ‎.claude/commands/，进 git。</p><p id="u7e4700d1" class="ne-p" style="text-align: left; line-height: 1.5">好处是：</p><p id="u83bb9738" class="ne-p" style="text-align: left; line-height: 1.5">● 少打废话 prompt</p><p id="uc819b401" class="ne-p" style="text-align: left; line-height: 1.5">● Claude 自己也能在工作流里调用这些命令</p><h2 id="00f57388" style="text-align: left; line-height: 1.5"><strong>8.</strong><strong> </strong><strong>把高频“套路”做成 skill，带脚本和示例 </strong></h2><p id="udc224375" class="ne-p" style="text-align: left; line-height: 1.5">Skill 比 command 更重一些：它可以带 ‎scripts/、‎references/、‎examples/。</p><p id="u6ad4f095" class="ne-p" style="text-align: left; line-height: 1.5">推荐使用<a href="https://github.com/anthropics/skills/tree/main/skills/skill-creator" data-href="https://github.com/anthropics/skills/tree/main/skills/skill-creator" target="_blank" class="ne-link">skill-creator</a><strong> 命令创建skills </strong><strong>(anthropic官方skills)</strong></p><p id="u4d945be9" class="ne-p" style="text-align: left; line-height: 1.5">适合用来封装这种东西：</p><p id="u0348724b" class="ne-p" style="text-align: left; line-height: 1.5">● 你的个人编码风格 / review 风格</p><p id="u35eea698" class="ne-p" style="text-align: left; line-height: 1.5">● 项目特有的“验证步骤”（例如检查某个业务流程）</p><p id="ud4104aea" class="ne-p" style="text-align: left; line-height: 1.5">● 常用的小工具脚本（跑静态检查、生成数据等）</p><h2 id="36fc18df" style="text-align: left; line-height: 1.5"><strong>9.</strong><strong> </strong><strong>每个 skill 写一个 “Gotchas” 区，专门记录翻车点 </strong></h2><p id="u7709a700" class="ne-p" style="text-align: left; line-height: 1.5">在 SKILL.md 里加一个 “Gotchas” section，专门写“Claude 之前在哪些地方栽过跟头”。</p><p id="u353fe8a5" class="ne-p" style="text-align: left; line-height: 1.5">比如：</p><p id="u338e77f0" class="ne-p" style="text-align: left; line-height: 1.5">● 容易漏掉哪几种边界 case</p><p id="u277cc7d3" class="ne-p" style="text-align: left; line-height: 1.5">● 哪个配置改动后要同步调整哪里</p><p id="u06cab74a" class="ne-p" style="text-align: left; line-height: 1.5">● 哪段代码千万别自动重构</p><p id="ua9bd1472" class="ne-p" style="text-align: left; line-height: 1.5">Claude 会特别关注这块内容，能明显减少重复犯错。</p><h2 id="d818b820" style="text-align: left; line-height: 1.5"><strong>10.</strong><strong> </strong><strong>出问题时多用</strong><strong>‎/rewind</strong><strong>回到 checkpoint </strong></h2><p id="ub2b84741" class="ne-p" style="text-align: left; line-height: 1.5">Claude Code 自带 git-based checkpointing。</p><p id="u5fd6f6ff" class="ne-p" style="text-align: left; line-height: 1.5">当你发现“模型越改越乱”“理解彻底跑偏”时，与其在当前上下文里拼命补救，不如直接 ‎<strong>/rewind</strong>回到之前正确的状态，再继续。</p></details>
+> [!COLLAPSE] ai coding 实践需知
+>
+> ### Claude Code实践经验
+>
+> 个人使用经验&外网的经验分享总结。参考文档：
+>
+> [https://code.claude.com/docs/en/best-practices](https://code.claude.com/docs/en/best-practices)
+>
+> [GitHub - shanraisshan/claude-code-best-practice: practice made claude perfect · GitHub](https://github.com/shanraisshan/claude-code-best-practice)
+>
+> #### 2. using-superpowers
+>
+> [https://github.com/obra/superpowers](https://github.com/obra/superpowers)
+>
+> 在做一切动作前，在你的输入框上打下 /using-superpowers 主动唤醒该skills
+>
+> 部分模型对skills的使用不够积极主动，比如minimax
+>
+> #### 3. 做好Context管理
+>
+> 上下文对于模型的性能非常非常重要，哪怕是**opus4.6在70-80%context的情况下，表现也会非常差。 有的时候不是模型不行，是你的上下文太冗余了**以下操作帮助你优化上下文：
+>
+> 1、 /context 查看当前的context占比1
+>
+> 2、 禁用未使用的mcp，考虑采用CLI替换mcp
+>
+> 3、
+>
+> ```
+> curl -LsSf https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-gnu -o ~/bin/uv
+> ```
+>
+> 4、
+>
+> 5、 不用使用/init来生成超长的[CLAUDE.md](https://CLAUDE.md)
+>
+> 6、 时刻关注context用量，在超过50%时，考虑使用/compact来压缩上下文
+>
+> 建议/compact + 定向的描述，让模型针对性的保留重要的上下文
+>
+> 7、 使用[rtk](https://www.rtk-ai.app/)优化git，ls等命令的无效输出
+>
+> ![](/images/yuque/8f17fb99903ca910.png)
+>
+> 左：普通的git log 右：rtk优化后的git log 节省了大量的token
+>
+> 8、 在指令中多使用**sub agent**执行任务
+>
+> 9、 切换任务时务必使用 **/clear** 清除上下文
+>
+> #### 4. 总结经验教训
+>
+> 在开发过程中，claude code总会犯错的。在犯错后，直接告诉他：
+>
+> ```
+> “你犯了什么XXX错,下次不能再犯”
+> “记住这一次的教训，不要再犯这个错了”
+> ```
+>
+> **Claude Code会将记忆写入memory.md，但是这也会占用context，所以务必控制长度！**
+>
+> #### 5. 给 Claude 可验证的成功标准
+>
+> **让 Claude 能自己检查自己**。
+>
+> 比如提供测试用例、截图对比、明确的期望输出，甚至是脚本或命令（如 ‎`npm test`、lint 命令）。
+>
+> 如果没有这些验证标准，Claude 很容易给出“看起来对但其实有 bug”的代码，最后只能靠你肉眼审查。
+>
+> **“不要 babysit（不要当保姆）”，少管细节，多让 Claude 自证正确；让 Claude 挑战你、证明修改是对的。**
+>
+> #### 6. 使用git worktree并行开发
+>
+> 在一个 Git 仓库里，你可以用 **git worktree** 开出同一个项目的“多个工作目录”，每个目录对应一个不同的分支。这样：
+>
+> ● 你可以给每个 agent（或者每个 Claude 会话）分配一个独立的 worktree，相当于每人一套单独的代码副本。
+>
+> ● 这些 worktree 互相不会干扰：一个 agent 在自己的 worktree 里乱改、乱试验，不会把别人的工作目录搞乱。
+>
+> ● 但它们毕竟还是同一个 Git 仓库，分支之间该合并、该 rebase 还是可以正常，最终再把各自的成果合回主干。
+>
+> **不用多开一堆重复仓库，就能给每个 agent 一块独立“沙盒”，各写各的分支，最后再合流。**
+>
+> #### 7. 经常做的指令转换为 command
+>
+> 你一天做不止一次的事情（比如整理 commit、对某类代码做 review、生成 changelog、检查 config），都应该变成 ‎/xxx 命令，写在 ‎.claude/commands/，进 git。
+>
+> 好处是：
+>
+> ● 少打废话 prompt
+>
+> ● Claude 自己也能在工作流里调用这些命令
+>
+> #### 8. 把高频“套路”做成 skill，带脚本和示例
+>
+> Skill 比 command 更重一些：它可以带 ‎scripts/、‎references/、‎examples/。
+>
+> 推荐使用[skill-creator](https://github.com/anthropics/skills/tree/main/skills/skill-creator)**命令创建skills (anthropic官方skills)**
+>
+> 适合用来封装这种东西：
+>
+> ● 你的个人编码风格 / review 风格
+>
+> ● 项目特有的“验证步骤”（例如检查某个业务流程）
+>
+> ● 常用的小工具脚本（跑静态检查、生成数据等）
+>
+> #### 9. 每个 skill 写一个 “Gotchas” 区，专门记录翻车点
+>
+> 在 SKILL.md 里加一个 “Gotchas” section，专门写“Claude 之前在哪些地方栽过跟头”。
+>
+> 比如：
+>
+> ● 容易漏掉哪几种边界 case
+>
+> ● 哪个配置改动后要同步调整哪里
+>
+> ● 哪段代码千万别自动重构
+>
+> Claude 会特别关注这块内容，能明显减少重复犯错。
+>
+> #### 10. 出问题时多用‎/rewind回到 checkpoint
+>
+> Claude Code 自带 git-based checkpointing。
+>
+> 当你发现“模型越改越乱”“理解彻底跑偏”时，与其在当前上下文里拼命补救，不如直接 ‎**/rewind**回到之前正确的状态，再继续。
+
 # 代码
 不需要等到有经验之后，才能写出这种提示词。
 

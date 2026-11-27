@@ -7,7 +7,35 @@ summary: >-
 yuqueUrl: 'https://www.yuque.com/yllmis/uw8ppk/qhvdz8vrihg3n10d'
 ---
 ## 上下文管理
-<details class="lake-collapse"><summary id="u6a0169d3"><strong>为什么服务端保存完整状态，但模型只看到精简上下文</strong></summary><p id="udfbc45ca" class="ne-p">防止上下文过长</p><p id="u5a9fbc90" class="ne-p">上下文越长：</p><ul class="ne-ul"><li id="ube48ac39" data-lake-index-type="0">请求成本越高；</li><li id="uf624a1b6" data-lake-index-type="0">速度越慢； </li><li id="ufba13957" data-lake-index-type="0">越容易超过模型限制。</li></ul><p id="u5b6839c9" class="ne-p"><strong>减少模型被无关信息干扰</strong></p><p id="u89365f8f" class="ne-p">如果把几十次工具调用全部发给模型，模型可能无法判断当前真正重要的信息。</p><p id="u9cf1e5e9" class="ne-p"><strong>降低敏感数据泄露风险</strong></p><p id="u78bf8089" class="ne-p">完整日志和完整消息正文可能包含：</p><ul class="ne-ul"><li id="u18742d79" data-lake-index-type="0">手机号；</li><li id="u3a1b7484" data-lake-index-type="0">Token；</li><li id="u42302982" data-lake-index-type="0">内部 IP；</li><li id="u1bb46b33" data-lake-index-type="0">数据库字段；</li><li id="u6f4bee4a" data-lake-index-type="0">用户隐私。</li></ul><p id="u6ea2f7a7" class="ne-p"><strong>防止模型重新解释原始数据</strong></p><p id="u006257dc" class="ne-p">模型应该处理结构化摘要，而不是重新分析一大堆未经整理的原始日志。</p></details>
+
+> [!COLLAPSE] 为什么服务端保存完整状态，但模型只看到精简上下文
+>
+> 防止上下文过长
+>
+> 上下文越长：
+>
+> - 请求成本越高；
+> - 速度越慢；
+> - 越容易超过模型限制。
+>
+> **减少模型被无关信息干扰**
+>
+> 如果把几十次工具调用全部发给模型，模型可能无法判断当前真正重要的信息。
+>
+> **降低敏感数据泄露风险**
+>
+> 完整日志和完整消息正文可能包含：
+>
+> - 手机号；
+> - Token；
+> - 内部 IP；
+> - 数据库字段；
+> - 用户隐私。
+>
+> **防止模型重新解释原始数据**
+>
+> 模型应该处理结构化摘要，而不是重新分析一大堆未经整理的原始日志。
+
 ```plain
 Conversation State
 = 当前客服诊断流程进展

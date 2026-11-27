@@ -399,11 +399,40 @@ func (r *redisIoWriter) Write(p []byte) (n int, err error) {
 ****
 
 #### 介绍
-<details class="lake-collapse"><summary id="u7e4c01e8">什么是gorm，先了解一下什么是orm</summary><ol class="ne-ol"><li id="ub0847643" data-lake-index-type="0">orm：将数据库中具体的某一个表结构变成结构体，将对表的操作变成对结构体的操作，高内聚、低耦合</li><li id="u3d5b8b2f" data-lake-index-type="0">gorm提供的功能</li></ol><ol class="ne-list-wrap"><ol ne-level="1" class="ne-ol"><li id="u947d27e4" data-lake-index-type="0">链式操作，降低写sql的难度</li><li id="ua343b5d6" data-lake-index-type="0">作参数转义，变相降低sql注入的风险</li><li id="u0ed495ac" data-lake-index-type="0">维持了MySql的链接池	</li></ol></ol><ol start="3" class="ne-ol"><li id="u2ae60dd1" data-lake-index-type="0">优势：提高了对数据库操作的便捷性</li><li id="u46bebbec" data-lake-index-type="0">问题：降低了写sql的能力</li></ol></details>
+
+> [!COLLAPSE] 什么是gorm，先了解一下什么是orm
+>
+> 1. orm：将数据库中具体的某一个表结构变成结构体，将对表的操作变成对结构体的操作，高内聚、低耦合
+> 2. gorm提供的功能
+>
+> 1. 链式操作，降低写sql的难度
+> 2. 作参数转义，变相降低sql注入的风险
+> 3. 维持了MySql的链接池
+>
+> 1. 优势：提高了对数据库操作的便捷性
+> 2. 问题：降低了写sql的能力
 
 #### 写原生
-<details class="lake-collapse"><summary id="ua4243010">Raw()</summary><p id="uca6da8d9" class="ne-p">执行任意sql语句 </p><p id="ue83d0fa2" class="ne-p"></p><p id="u2ef211c7" class="ne-p">缺点：</p><ol class="ne-ol"><li id="ua2d1defb" data-lake-index-type="0">如果直接使用用户输入拼接SQL语句，容易受到SQL注入攻击</li><li id="ucd3c01af" data-lake-index-type="0">复杂的原生SQL语句难以阅读和维护（维护成本）</li></ol></details>
-<details class="lake-collapse"><summary id="u5ee4e4b3">Exec()</summary><p id="u4e3d8ee5" class="ne-p">执行不带返回结果的SQL语句，如INSERT、UPDATE、DELETE等操作</p><p id="u9e0d5e15" class="ne-p"></p><p id="uc18eb2f3" class="ne-p">缺点：</p><ol class="ne-ol"><li id="ue97fc795" data-lake-index-type="0" style="text-align: left">不适用于带返回结果的查询：Exec()方法主要用于执行不带返回结果的语句，对于需要处理查询结果的场景不太适用。</li><li id="ua7d9c3bc" data-lake-index-type="0" style="text-align: left">功能限制：相对于Raw()方法，Exec()方法的灵活性较低，无法充分利用数据库的特性或进行性能优化。</li><li id="u884a4707" data-lake-index-type="0" style="text-align: left">事务依赖：如果需要使用事务来确保操作的原子性，必须依赖GORM的事务处理机制，可能影响性能。</li></ol></details>
+
+> [!COLLAPSE] Raw()
+>
+> 执行任意sql语句
+>
+> 缺点：
+>
+> 1. 如果直接使用用户输入拼接SQL语句，容易受到SQL注入攻击
+> 2. 复杂的原生SQL语句难以阅读和维护（维护成本）
+
+> [!COLLAPSE] Exec()
+>
+> 执行不带返回结果的SQL语句，如INSERT、UPDATE、DELETE等操作
+>
+> 缺点：
+>
+> 1. 不适用于带返回结果的查询：Exec()方法主要用于执行不带返回结果的语句，对于需要处理查询结果的场景不太适用。
+> 2. 功能限制：相对于Raw()方法，Exec()方法的灵活性较低，无法充分利用数据库的特性或进行性能优化。
+> 3. 事务依赖：如果需要使用事务来确保操作的原子性，必须依赖GORM的事务处理机制，可能影响性能。
+
 #### 用法
 + **Pluck**方法，查询单列数据，将每一行的数据存到切片当中
 + 

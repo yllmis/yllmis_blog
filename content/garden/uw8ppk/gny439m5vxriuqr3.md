@@ -6,7 +6,9 @@ summary: >-
   所代表的物理含义，即：针对规模为 n 的子问题，其最终的计算结果或所满足的约束条件是什么
 yuqueUrl: 'https://www.yuque.com/yllmis/uw8ppk/gny439m5vxriuqr3'
 ---
-<details class="lake-collapse"><summary id="ua825d103">小记</summary><p id="u6c318fee" class="ne-p"><strong>当数组有序且需要查找某个数时，采用二分查找，时间复杂度</strong><code class="ne-code"><strong>O(log n )</strong></code></p></details>
+> [!COLLAPSE] 小记
+>
+> **当数组有序且需要查找某个数时，采用二分查找，时间复杂度**`O(log n )`
 
 # 递归
 > 破解递归的核心在于**准确界定状态的语义**。我们必须明确 `dfs(n)` 所代表的物理含义，即：**针对规模为 **`**n**`** 的子问题，其最终的计算结果或所满足的约束条件是什么**
@@ -581,7 +583,25 @@ func subsets(nums []int) [][]int {
 :::
 
 ## 34.在排序数组中查找元素的第一个和最后一个位置
-<details class="lake-collapse"><summary id="u83fce637"><strong>解题思路推进</strong></summary><p id="uad69fb6e" class="ne-p">第一阶段：识别二分查找</p><p id="ufa5c21e4" class="ne-p" style="text-indent: 2em">有序数组 + \(O(\log n)\) 的复杂度要求，优先考虑二分查找。</p><p id="uf0b9fb03" class="ne-p">第二阶段：寻找左右边界</p><p id="u9b07584f" class="ne-p" style="text-indent: 2em">普通二分只能找到一个匹配位置。通过记录 <code class="ne-code">ans</code>，并继续向左或向右二分寻找边界。</p><p id="ue8fa21a6" class="ne-p">第三阶段：抽象公共逻辑</p><p id="ucb4d43c8" class="ne-p" style="text-indent: 2em">发现 <code class="ne-code">searchLeft</code> 和 <code class="ne-code">searchRight</code> 只有相等时的指针移动方向不同，通过 <code class="ne-code">findLeft</code> 参数合并函数。</p><p id="u345f59ee" class="ne-p">第四阶段：转换为边界问题</p><p id="uff3a85fc" class="ne-p" style="text-indent: 2em">不再寻找等于 <code class="ne-code">target</code> 的元素，而是寻找第一个满足单调条件的位置。利用循环不变量，让 <code class="ne-code">left</code> 自然收敛到分界点。</p></details>
+
+> [!COLLAPSE] 解题思路推进
+>
+> 第一阶段：识别二分查找
+>
+> 有序数组 + \(O(\log n)\) 的复杂度要求，优先考虑二分查找。
+>
+> 第二阶段：寻找左右边界
+>
+> 普通二分只能找到一个匹配位置。通过记录 `ans`，并继续向左或向右二分寻找边界。
+>
+> 第三阶段：抽象公共逻辑
+>
+> 发现 `searchLeft` 和 `searchRight` 只有相等时的指针移动方向不同，通过 `findLeft` 参数合并函数。
+>
+> 第四阶段：转换为边界问题
+>
+> 不再寻找等于 `target` 的元素，而是寻找第一个满足单调条件的位置。利用循环不变量，让 `left` 自然收敛到分界点。
+
 常规思路：
 
 1. 先找到目标数 (target) 
@@ -1195,7 +1215,12 @@ func reverseList(head *ListNode) *ListNode {
 
 4. a = (n - 1)(b + c) + c  **从“链表头（head）走到环入口的距离 (a)”，刚好等于“slow从相遇点走到环入口的距离 (c)”，再加上不知多少个整圈。 **所以二者相遇在入口	
 
-<details class="lake-collapse"><summary id="ub0cd72ed"><strong>问题：快慢指针相遇时，为什么慢指针的移动距离小于环长？</strong></summary><p id="u2619abae" class="ne-p">![](/images/yuque/bd189ee3b63273f3.png)最坏情况</p><p id="u7ac98ebe" class="ne-p">以最坏情况看，slow进入环时，fast只比slow多一步。fast指针需要走（环长-1）步才能与慢指针相遇，所以慢指针移动距离是小于环长的。</p></details>
+> [!COLLAPSE] 问题：快慢指针相遇时，为什么慢指针的移动距离小于环长？
+>
+> ![](/images/yuque/bd189ee3b63273f3.png)最坏情况
+>
+> 以最坏情况看，slow进入环时，fast只比slow多一步。fast指针需要走（环长-1）步才能与慢指针相遇，所以慢指针移动距离是小于环长的。
+
 ```go
 /**
  * Definition for singly-linked list.

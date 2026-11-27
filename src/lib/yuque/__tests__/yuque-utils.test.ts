@@ -12,6 +12,8 @@ describe("yuque-utils", () => {
     const raw = [
       '<a name="abc12"></a>',
       '**<font style="color:#000;background:#FBDE28;">重点引用</font>**',
+      "**<u>乐观锁</u>**",
+      "                    --2026.03.27记",
       "",
       "![图](https://cdn.nlark.com/yuque/0/2026/png/1/a.png#align=left&width=100)",
       "",
@@ -22,9 +24,25 @@ describe("yuque-utils", () => {
 
     const cleaned = cleanYuqueMarkdown(raw);
     expect(cleaned).toContain("**重点引用**");
+    expect(cleaned).toContain("**乐观锁**");
+    expect(cleaned).not.toContain("<u>");
+    expect(cleaned).toContain("\n--2026.03.27记\n");
     expect(cleaned).not.toContain("<a name=");
     expect(cleaned).toContain("![图](https://cdn.nlark.com/yuque/0/2026/png/1/a.png)");
     expect(cleaned).toContain('<font color="red">keep inside code</font>');
+  });
+
+  it("converts Yuque lake-collapse details blocks into [!COLLAPSE] markdown", () => {
+    const raw =
+      '<details class="lake-collapse"><summary id="u1"><strong>思考：AI 时代</strong></summary><p id="p1" class="ne-p">第一段 <code class="ne-code">git status</code></p><ol class="ne-ol"><li>要点一</li><li>要点二</li></ol></details>';
+
+    const cleaned = cleanYuqueMarkdown(raw);
+    expect(cleaned).toContain("> [!COLLAPSE] 思考：AI 时代");
+    expect(cleaned).toContain("> 第一段 `git status`");
+    expect(cleaned).toContain("> 1. 要点一");
+    expect(cleaned).toContain("> 2. 要点二");
+    expect(cleaned).not.toContain("<details");
+    expect(cleaned).not.toContain("<p ");
   });
 
   it("extracts unique nlark.com image URLs and builds deterministic local filenames", () => {

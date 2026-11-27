@@ -1,10 +1,10 @@
 "use client";
 
-import { isValidElement, useState, type ReactNode } from "react";
+import { Children, isValidElement, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { Check, Copy } from "lucide-react";
+import { Check, ChevronRight, Copy } from "lucide-react";
 import { remarkBreaks } from "@/lib/content/remark-breaks";
 import { createHeadingIdFactory } from "@/lib/content/toc";
 
@@ -91,6 +91,38 @@ function CodeBlock({ children }: { children?: ReactNode }) {
   );
 }
 
+function SmartBlockquote({ children }: { children?: ReactNode }) {
+  const meaningful = Children.toArray(children).filter(
+    (child) => !(typeof child === "string" && child.trim() === ""),
+  );
+
+  const first = meaningful[0];
+  const firstText = first ? extractNodeText(first).trim() : "";
+
+  if (firstText.startsWith("[!COLLAPSE]")) {
+    const title = firstText.replace(/^\[!COLLAPSE\]\s*/, "").trim() || "展开详情";
+    const bodyChildren = meaningful.slice(1);
+
+    return (
+      <details className="not-prose group my-5 overflow-hidden rounded-2xl border border-sky-200/75 bg-sky-50/45 backdrop-blur-sm transition-colors open:border-sky-300/90 dark:border-sky-400/20 dark:bg-sky-950/25 dark:open:border-sky-400/40">
+        <summary className="flex cursor-pointer list-none items-start gap-2.5 px-4 py-3.5 text-sm font-medium leading-relaxed text-stone-800 transition-colors hover:bg-sky-100/50 dark:text-stone-100 dark:hover:bg-sky-900/30">
+          <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-sky-500 transition-transform duration-200 group-open:rotate-90" />
+          <span>{title}</span>
+        </summary>
+        {bodyChildren.length > 0 && (
+          <div className="border-t border-sky-200/60 px-5 py-4 dark:border-sky-400/15">
+            <div className="prose prose-stone prose-sm max-w-none dark:prose-invert prose-p:my-2.5 prose-p:leading-[1.85] prose-p:text-stone-700 dark:prose-p:text-stone-300 prose-img:my-3 prose-img:rounded-xl prose-li:my-1 prose-code:rounded-md prose-code:bg-stone-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:before:content-none prose-code:after:content-none dark:prose-code:bg-slate-800/90 dark:prose-code:text-sky-200">
+              {bodyChildren}
+            </div>
+          </div>
+        )}
+      </details>
+    );
+  }
+
+  return <blockquote>{children}</blockquote>;
+}
+
 export function MarkdownRenderer({ content, className = "" }: MarkdownRendererProps) {
   const nextHeadingId = createHeadingIdFactory();
 
@@ -103,6 +135,9 @@ export function MarkdownRenderer({ content, className = "" }: MarkdownRendererPr
         rehypePlugins={[rehypeHighlight]}
         components={{
           pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+          blockquote: ({ children }) => (
+            <SmartBlockquote>{children}</SmartBlockquote>
+          ),
           h1: ({ children }) => (
             <h1 id={nextHeadingId(extractNodeText(children))}>{children}</h1>
           ),

@@ -35,7 +35,15 @@ docker run --name user-api -p 8888:8888 --net user --ip 168.10.0.50 --1ink etcd 
 
 # 存储
 ## 默认存储（非持久化）
-<details class="lake-collapse"><summary id="u79e23861">容器的文件存储机制</summary><p id="u18988d39" class="ne-p">union FS（联合文件系统）</p><p id="u822f50cc" class="ne-p" style="text-indent: 2em"></p><p id="u234a3075" class="ne-p">只写层（容器中运行产生的数据）</p><p id="u11035a41" class="ne-p">只读层（镜像）</p></details>
+
+> [!COLLAPSE] 容器的文件存储机制
+>
+> union FS（联合文件系统）
+>
+> 只写层（容器中运行产生的数据）
+>
+> 只读层（镜像）
+
 ## 持久化存储
 ### Bind Mount 绑定挂载
 > **宿主机 var/data **↔ **容器 /data** 

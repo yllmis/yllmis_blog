@@ -145,7 +145,13 @@ func DoVote2(userId int64, voteId int64, optIds []int64) bool {
 利用业务代码添加Add，Update，Del等代码（gorm的create，[save](https://juejin.cn/post/7304867278566391860)等方式）
 
 #### 错误与收获：
-<details class="lake-collapse"><summary id="u8f00316a">错误与收获：</summary><p id="u29fbc298" class="ne-p">今天又碰到了提交之后和远程不同出现冲突的问题，研究了一下发现是因为提交时用的时提交（修改）方法也就是 <code class="ne-code">git commit -amend</code>,该方法可以用来修改最后一次提交，但如果该提交时已经推送到远程的，就会导致远程和本地冲突需要拉取远程代码，最后进行解决合并问题，非常麻烦。 </p><p id="ub657a9c8" class="ne-p">可以利用<code class="ne-code">git reset --soft origin/main &amp;&amp; git status</code>将本地状态软重置到远程分支的状态，进行重新提交本地代码。</p></details>
+
+> [!COLLAPSE] 错误与收获：
+>
+> 今天又碰到了提交之后和远程不同出现冲突的问题，研究了一下发现是因为提交时用的时提交（修改）方法也就是 `git commit -amend`,该方法可以用来修改最后一次提交，但如果该提交时已经推送到远程的，就会导致远程和本地冲突需要拉取远程代码，最后进行解决合并问题，非常麻烦。
+>
+> 可以利用`git reset --soft origin/main && git status`将本地状态软重置到远程分支的状态，进行重新提交本地代码。
+
 ### day06
 #### 前端利用Echart展示饼状图
 收获：了解到`ctx.JSON(http.StatusOK, obj)`获取的JSON可以网页开发者工具中 网络->Fetch/XHR->响应中 中查看是否正确返回
@@ -248,7 +254,7 @@ func GetVoteHistory(userId, voteId int64) []VoteOptUser {
 }
 ```
 
-这个和注册有一样的问题，当发起大量请求时依旧会导致出现重复投票（注册会出现重复名字）的问题，解决这种高并发的问题可以利用 **<u>乐观锁，悲观锁，分布式锁。消息队列（最好）</u>** 
+这个和注册有一样的问题，当发起大量请求时依旧会导致出现重复投票（注册会出现重复名字）的问题，解决这种高并发的问题可以利用 **乐观锁，悲观锁，分布式锁。消息队列（最好）** 
 
 #### 日志包
 官方自带包（不好用，功能少且一般）
@@ -369,7 +375,13 @@ gorm会帮助进行转义，防止被sql攻击
 #### 限流策略
 一般不放到代码中，而是会放到网关层，比如：Nginx
 
-<details class="lake-collapse"><summary id="ue332f7c5">其他的限流策略</summary><ol class="ne-ol"><li id="uae03f1bf" data-lake-index-type="0">漏斗算法的限流 </li><li id="u5cd1281e" data-lake-index-type="0">令牌桶算法的限流</li><li id="ueab6e23a" data-lake-index-type="0">滑动窗口算法的限流</li><li id="u1aec21e9" data-lake-index-type="0">基于服务器资源使用率的限流</li></ol></details>
+> [!COLLAPSE] 其他的限流策略
+>
+> 1. 漏斗算法的限流
+> 2. 令牌桶算法的限流
+> 3. 滑动窗口算法的限流
+> 4. 基于服务器资源使用率的限流
+
 常用的限流包：GO小三包里的time/rate
 
 ### day11
@@ -469,5 +481,9 @@ cookie -> session -> session-redis -> 验签服务，专门的分布式缓存
 ![画板](/images/yuque/c0931e7bd6502a85.jpg)
 
 ## 困惑
-<details class="lake-collapse"><summary id="u932e4311">有必要去熟练sql语句吗，用orm更好还是原生</summary><ol class="ne-ol"><li id="u9976134a" data-lake-index-type="0"></li></ol></details>
-<details class="lake-collapse"><summary id="uda9a0491">写接口文档是提前写好再去实现接口吗，那swagger不是写完接口再生成的吗</summary><p id="u819ff04a" class="ne-p"></p></details>
+
+> [!COLLAPSE] 有必要去熟练sql语句吗，用orm更好还是原生
+>
+
+> [!COLLAPSE] 写接口文档是提前写好再去实现接口吗，那swagger不是写完接口再生成的吗
+>
